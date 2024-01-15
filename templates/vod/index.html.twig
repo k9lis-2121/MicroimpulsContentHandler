@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}VOD index{% endblock %}
+
+{% block body %}
+    <h1>VOD index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Kp_id</th>
+                <th>Content_type</th>
+                <th>Content_name</th>
+                <th>Parent_id</th>
+                <th>Torrent_link</th>
+                <th>Transcoded</th>
+                <th>Moderation</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vod in vods %}
+            <tr>
+                <td>{{ vod.id }}</td>
+                <td>{{ vod.kpId }}</td>
+                <td>{{ vod.contentType ? 'Yes' : 'No' }}</td>
+                <td>{{ vod.contentName }}</td>
+                <td>{{ vod.parentId }}</td>
+                <td>{{ vod.torrentLink }}</td>
+                <td>{{ vod.transcoded ? 'Yes' : 'No' }}</td>
+                <td>{{ vod.moderation }}</td>
+                <td>{{ vod.description }}</td>
+                <td>
+                    <a href="{{ path('app_vod_show', {'id': vod.id}) }}">show</a>
+                    <a href="{{ path('app_vod_edit', {'id': vod.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vod_new') }}">Create new</a>
+{% endblock %}

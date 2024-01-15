@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New VOD{% endblock %}
+
+{% block body %}
+    <h1>Create new VOD</h1>
+
+    {{ include('vod/_form.html.twig') }}
+
+    <a href="{{ path('app_vod_index') }}">back to list</a>
+{% endblock %}

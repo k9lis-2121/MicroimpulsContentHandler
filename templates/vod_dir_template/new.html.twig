@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New VodDirTemplate{% endblock %}
+
+{% block body %}
+    <h1>Create new VodDirTemplate</h1>
+
+    {{ include('vod_dir_template/_form.html.twig') }}
+
+    <a href="{{ path('app_vod_dir_template_index') }}">back to list</a>
+{% endblock %}

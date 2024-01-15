@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit VodDirTemplate{% endblock %}
+
+{% block body %}
+    <h1>Edit VodDirTemplate</h1>
+
+    {{ include('vod_dir_template/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_vod_dir_template_index') }}">back to list</a>
+
+    {{ include('vod_dir_template/_delete_form.html.twig') }}
+{% endblock %}

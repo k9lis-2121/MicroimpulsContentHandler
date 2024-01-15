@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}VodDirTemplate index{% endblock %}
+
+{% block body %}
+    <h1>VodDirTemplate index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Template</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vod_dir_template in vod_dir_templates %}
+            <tr>
+                <td>{{ vod_dir_template.id }}</td>
+                <td>{{ vod_dir_template.title }}</td>
+                <td>{{ vod_dir_template.template }}</td>
+                <td>{{ vod_dir_template.description }}</td>
+                <td>
+                    <a href="{{ path('app_vod_dir_template_show', {'id': vod_dir_template.id}) }}">show</a>
+                    <a href="{{ path('app_vod_dir_template_edit', {'id': vod_dir_template.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vod_dir_template_new') }}">Create new</a>
+
+    
+{% endblock %}

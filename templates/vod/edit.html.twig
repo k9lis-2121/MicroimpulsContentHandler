@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit VOD{% endblock %}
+
+{% block body %}
+    <h1>Edit VOD</h1>
+
+    {{ include('vod/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_vod_index') }}">back to list</a>
+
+    {{ include('vod/_delete_form.html.twig') }}
+{% endblock %}

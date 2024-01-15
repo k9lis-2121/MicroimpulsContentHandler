@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}VOD{% endblock %}
+
+{% block body %}
+    <h1>VOD</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ vod.id }}</td>
+            </tr>
+            <tr>
+                <th>Kp_id</th>
+                <td>{{ vod.kpId }}</td>
+            </tr>
+            <tr>
+                <th>Content_type</th>
+                <td>{{ vod.contentType ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Content_name</th>
+                <td>{{ vod.contentName }}</td>
+            </tr>
+            <tr>
+                <th>Parent_id</th>
+                <td>{{ vod.parentId }}</td>
+            </tr>
+            <tr>
+                <th>Torrent_link</th>
+                <td>{{ vod.torrentLink }}</td>
+            </tr>
+            <tr>
+                <th>Transcoded</th>
+                <td>{{ vod.transcoded ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Moderation</th>
+                <td>{{ vod.moderation }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ vod.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vod_index') }}">back to list</a>
+
+    <a href="{{ path('app_vod_edit', {'id': vod.id}) }}">edit</a>
+
+    {{ include('vod/_delete_form.html.twig') }}
+{% endblock %}

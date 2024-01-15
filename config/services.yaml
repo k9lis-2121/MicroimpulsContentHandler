@@ -4,8 +4,20 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    kp_token: '%env(KP_TOKEN)%'
+    kp_base_url: '%env(KP_BASE_URL)%'
+    kp_version_api: '%env(KP_VERSION_API)%'
+    brochures_directory: '%kernel.project_dir%/public/img'
 
 services:
+    App\Interface\Service\Api\BaseApiInterface: '@App\Service\Api\BaseApiService'
+    App\Interface\Service\Api\External\Kinopoisk\GetContentInfoInterface: '@App\Service\Api\External\Kinopoisk\GetContentInfoService'
+    App\Interface\Service\Api\External\Kinopoisk\KinopoiskUrlMakerInterface: '@App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService'
+    App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService:
+        arguments:
+            $kp_token: '%kp_token%'
+            $kp_base_url: '%kp_base_url%'
+            $kp_version_api: '%kp_version_api%'
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
