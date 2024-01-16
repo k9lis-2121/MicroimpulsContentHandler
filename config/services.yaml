@@ -10,14 +10,66 @@ parameters:
     brochures_directory: '%kernel.project_dir%/public/img'
 
 services:
-    App\Interface\Service\Api\BaseApiInterface: '@App\Service\Api\BaseApiService'
-    App\Interface\Service\Api\External\Kinopoisk\GetContentInfoInterface: '@App\Service\Api\External\Kinopoisk\GetContentInfoService'
-    App\Interface\Service\Api\External\Kinopoisk\KinopoiskUrlMakerInterface: '@App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService'
-    App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService:
+    App\Service\FfmpegService:
+        autowire: true
+    App\Service\FileNameParserService:
+        autowire: true
+    App\Service\ThumbnailExtractorService:
         arguments:
-            $kp_token: '%kp_token%'
-            $kp_base_url: '%kp_base_url%'
-            $kp_version_api: '%kp_version_api%'
+            - '@App\Service\DbAssist\SmartyDbAssistService'
+            - '@App\Service\ContentDirHandler\DirMakerService'
+            - '@App\Service\FfmpegService'
+    App\Service\Api\External\Convertio\ConvertioService:
+        autowire: true
+    App\Service\Api\External\Kinopoisk\ActorHelperService:
+        arguments:
+            - '@App\Service\DbAssist\SmartyDbAssistService'
+    App\Service\Api\External\Kinopoisk\GetContentInfoService:
+        arguments:
+            - '@App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService'
+            - '@App\Service\Api\BaseApiService'
+    App\Service\Api\External\Kinopoisk\KinopoiskProcessorService:
+        arguments:
+            - '@App\Service\Cleaner\StringCleanerService'
+            - '@App\Service\Api\External\Kinopoisk\PretrainingDataService'
+            - '@App\Service\Api\External\Smarty\SmartyContentApiService'
+            - '@App\Service\DbAssist\SmartyDbAssistService'
+            - '@App\Service\ImageHandler\ImageHandlerService'
+    App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService:
+        autowire: true
+    App\Service\Api\External\Kinopoisk\PretrainingDataService:
+        autowire: true
+    App\Service\Api\External\Smarty\SmartyContentApiService:
+        autowire: true
+    App\Service\Api\Inside\MakeContentDirService:
+        arguments:
+            - '@App\Service\ContentDirHandler\DirMakerService'
+    App\Service\Api\Inside\SerialHelperService:
+        arguments:
+            - '@App\Service\Api\External\Smarty\SmartyContentApiService'
+            - '@App\Service\ThumbnailExtractorService'
+            - '@App\Service\FfmpegService'
+    App\Service\Api\BaseApiService:
+        autowire: true
+    App\Service\Cleaner\StringCleanerService:
+        autowire: true
+    App\Service\ContentDirHandler\DirMakerService:
+        autowire: true
+    App\Service\DbAssist\SmartyDbAssistService:
+        arguments:
+            - '@App\Service\DbAssist\SmartyDbConnectorService'
+    App\Service\DbAssist\SmartyDbConnectorService:
+        autowire: true
+    App\Service\ImageHandler\ImageConverterService:
+        autowire: true
+    App\Service\ImageHandler\ImageDirectoryHelperService:
+        autowire: true
+    App\Service\ImageHandler\ImageHandlerService:
+        arguments:
+            - '@App\Service\ImageHandler\ImageConverterService'
+            - '@App\Service\ImageHandler\ImageDirectoryHelperService'
+            - '@App\Service\Api\External\Convertio\ConvertioService'
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

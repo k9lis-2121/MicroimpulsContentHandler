@@ -52,6 +52,7 @@ class FfmpegService
         } catch (ProcessFailedException $exception) {
             // Обработка ошибки, если произошла
             // неудачная попытка выполнить команду ffprobe
+            return 0;
         }
     }
 

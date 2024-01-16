@@ -4,7 +4,6 @@
 namespace App\Service\Api\External\Kinopoisk;
 use App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService;
 use App\Service\Api\BaseApiService;
-use App\Interface\Service\Api\External\Kinopoisk\KinopoiskUrlMakerInterface;
 use App\Interface\Service\Api\External\Kinopoisk\GetContentInfoInterface;
 
 /**

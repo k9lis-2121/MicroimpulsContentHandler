@@ -3,8 +3,6 @@
 namespace App\Service\Api\External\Kinopoisk;
 
 use App\Interface\Service\Api\External\Kinopoisk\PretrainingDataInterface;
-use App\Service\Cleaner\StringCleanerService;
-use App\Service\Api\External\Smarty\SmartyContentApiService;
 /**
 * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
 * @api Кинопоиск

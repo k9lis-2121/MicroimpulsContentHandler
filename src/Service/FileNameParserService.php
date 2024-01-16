@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Interfaces\Service\FileNameParserInterface;
 
-class FileNameParser implements FileNameParserInterface
+class FileNameParserService implements FileNameParserInterface
 {
     private array $templates = [
         'sxxexx' => [

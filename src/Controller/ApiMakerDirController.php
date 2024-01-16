@@ -15,10 +15,12 @@ use App\Service\Api\External\Kinopoisk\KinopoiskProcessorService;
 use App\Service\Api\External\Smarty\SmartyContentApiService;
 use App\Service\ThumbnailExtractorService;
 use App\Service\FfmpegService;
+use App\Service\Api\Inside\MakeContentDirService;
+use App\Service\Api\Inside\SerialHelperService;
 
 
 /*
-
+ 
 План:
 Реализовать создание директорий для фильмов
 Реализовать создание директорий для сериалов
@@ -40,8 +42,9 @@ class ApiMakerDirController extends AbstractController
     private $kpProcessor;
     private $getContentInfo;
     private $smartyApi;
-    private $thumbnailExtractor;
     private $ffmpeg;
+    private $makeContentDir;
+    private $serialHelper;
 
     /**
      * В конструктор загружаются вспомогательные сервисы
@@ -49,38 +52,23 @@ class ApiMakerDirController extends AbstractController
      * @param GetContentInfoService $getContentInfo
      * @param KinopoiskProcessorService $kpProcessor
      * @param SmartyContentApiService $smartyApi
-     * @param ThumbnailExtractorService $thumbnailExtractor
      * @param FfmpegService $ffmpeg
+     * @param SertialHelperService $serialHelper
      */
     public function __construct(
-                                    GetContentInfoService $getContentInfo, 
-                                    KinopoiskProcessorService $kpProcessor, 
-                                    SmartyContentApiService $smartyApi,
-                                    ThumbnailExtractorService $thumbnailExtractor,
-                                    FfmpegService $ffmpeg
-                                ){
+        GetContentInfoService $getContentInfo,
+        KinopoiskProcessorService $kpProcessor,
+        SmartyContentApiService $smartyApi,
+        FfmpegService $ffmpeg,
+        MakeContentDirService $makeContentDir,
+        SerialHelperService $serialHelper
+    ) {
         $this->getContentInfo = $getContentInfo;
         $this->kpProcessor = $kpProcessor;
         $this->smartyApi = $smartyApi;
-        $this->thumbnailExtractor = $thumbnailExtractor;
         $this->ffmpeg = $ffmpeg;
-    }
-
-    /**
-     * Вспомогательная функция слишком малая для выноса в отдельный сервис
-     *
-     * @param integer $number
-     * @return integer
-     */
-    private function numStandardizer(int $number): int
-    {
-        if($number < 10){
-            $numStandardizeded = '0'.$number;
-        }else{
-            $numStandardizeded = $number;
-        }
-
-        return (int) $numStandardizeded;
+        $this->makeContentDir = $makeContentDir;
+        $this->serialHelper = $serialHelper;
     }
 
     /**
@@ -94,106 +82,33 @@ class ApiMakerDirController extends AbstractController
     #[Route('/api/maker/dir', name: 'app_api_maker_dir', methods: ['POST'])]
     public function index(Request $request, VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService): Response
     {
-        $filesystem = new Filesystem();
-
-
-
         $data = json_decode($request->get('data'), true);
 
+        $result = $this->makeContentDir->makeFullDir($request, $data);
 
 
-        $movie = $vodDirTemplateRepository->findOneBy(['title' => 'Фильм']);
-        $tmpMovie = $movie->getTemplate();
-        $season = $vodDirTemplateRepository->findOneBy(['title' => 'Сериал']);
-        $tmpSeason = $season->getTemplate();
-        $template = [
-            'season' => $tmpSeason,
-            'movie' => $tmpMovie
-        ];
+        $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
+        $kinopoiskData = json_decode($kpresponse->getContent(), true);
+        $kinopoiskDataProcessing = $this->kpProcessor->dataProcessing($kinopoiskData);
+        $createdVideoResponse = $this->kpProcessor->sendDataInSmarty($kinopoiskDataProcessing);
 
+        if ($data['isTrailler']) {
 
-        
-    $baseDir = $dirMakerService->makeBaseDir($data, $template);
-    if ($request->files->get('file')) {
-        $dirMakerService->infoFileLoader($request->files->get('file'), $baseDir['dir']);
-    }
+            $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result[0] . '/playlist.m3u8');
+            $this->smartyApi->createVideoFile('Трейлер', $createdVideoResponse['id'], ['is_trailer' => 1, 'filename' => $result[0], 'duration' => $duration]);
             
-            if($data['isTrailler']){
-                $trailerDir = $dirMakerService->makeTraillerDir($data, $tmpMovie.'/trailer');
-            }
+        } elseif ($data['isSerial']) {
 
-            if($data['seasonCount'] or $data['sameEpisodesCount']){
-                $seasonDir = $dirMakerService->dirCreateSE($data, $template);
-                dump($seasonDir);
-            }
+            $this->serialHelper->makeSeasonAndEpisodeInSmarty($data, $createdVideoResponse['id'], $result);
             
-            if($data['isTrailler']){
-                $result[] = str_replace('/VOD'.'/', '', $trailerDir['dir']);
-            }elseif($data['isSerial']){
-                foreach($seasonDir as $arr){
-                    foreach($arr as $key => $value){
-                        if($key == 'dir'){
-                            $result['dir'][] = str_replace('/VOD'.'/', '', $value);
-                        }
-                    }
-                }
-                
-            }else{
-                $result[] = str_replace('/VOD'.'/', '', $baseDir['dir']);
-            }
+        } else {
+
+            $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result[0] . '/playlist.m3u8');
+            $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $result[0], 'duration' => $duration]);
+
+        }
 
 
-            $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
-            $kinopoiskData = json_decode($kpresponse->getContent(), true);
-            $kinopoiskDataProcessing = $this->kpProcessor->dataProcessing($kinopoiskData);
-            $createdVideoResponse = $this->kpProcessor->sendDataInSmarty($kinopoiskDataProcessing);
-            
-            if($data['isTrailler']){
-                $duration = $this->ffmpeg->getVideoDuration('/VOD'.'/'.$result[0].'/playlist.m3u8');
-                $videoFile = $this->smartyApi->createVideoFile('Трейлер', $createdVideoResponse['id'], ['is_trailer' => 1, 'filename' => $result[0], 'duration' => $duration]);
-            }elseif($data['isSerial']){
-
-                $resultCount = 0;
-                foreach($data['episodesCount'] as $season => $episdoes){
-
-                    $seasonNum = $this->numStandardizer($season);
-
-                    $smartySeason = $this->smartyApi->createSeason('Сезон '. $seasonNum, $createdVideoResponse['id']);
-                    for($i = 1; $i<=$episdoes; $i++){
-
-                        $episodeNum = $this->numStandardizer($i);
-                                                               
-                        $duration = $this->ffmpeg->getVideoDuration('/VOD'.'/'.$result['dir'][$resultCount].'/playlist.m3u8');
-
-                        $smartyEpisode = $this->smartyApi->createEpisode(
-                                                                            $createdVideoResponse['id'], 
-                                                                            'Серия '.$episodeNum, $smartySeason['id'], 
-                                                                            ['duration' => $duration]
-                                                                        );
-                        
-                        $contentDir = '/VOD'.'/'.$result['dir'][$resultCount];
-                        $addScreenResult = $this->thumbnailExtractor->extractThumbnails($smartyEpisode['id'], $contentDir);
-                        $videoFile[] = $this->smartyApi->createVideoFile(
-                                                                            'Сезон '.$seasonNum.' Серия '.$episodeNum, $createdVideoResponse['id'], 
-                                                                            [
-                                                                                'filename' => $result['dir'][$resultCount], 
-                                                                                'episode_id' => $smartyEpisode['id'], 
-                                                                                'duration' => $duration
-                                                                            ]
-                                                                        );
-                        $resultCount++;
-                        
-                    }
-
-                }
-
-            }else{
-                $duration = $this->ffmpeg->getVideoDuration('/VOD'.'/'.$result[0].'/playlist.m3u8');
-
-                $videoFile = $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $result[0], 'duration' => $duration]);
-            }
-
-            
         $response = [
             'message' => 'Запись добавлена',
         ];
