@@ -81,7 +81,6 @@ class ThumbnailExtractorService
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_089.ts', 'screen3.jpg', $dirScreen);
         $this->smartyDb->setScreenEpisode($episode);
         $this->db->update('tasks_screen', ['status' => 'завершена'], ['episode' => $episode]);
-        // ...
     }
 
 }

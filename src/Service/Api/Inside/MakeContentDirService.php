@@ -65,9 +65,6 @@ class MakeContentDirService
 
 
         $baseDir = $this->dirMakerService->makeBaseDir($data, $template);
-        // if ($data['request']->files->get('file')) {
-        //     $this->dirMakerService->infoFileLoader($data['request']->files->get('file'), $baseDir['dir']);
-        // }
 
         if ($data['isTrailler']) {
             $trailerDir = $this->dirMakerService->makeTraillerDir($data, $tmpMovie . '/trailer');
@@ -91,16 +88,7 @@ class MakeContentDirService
         } else {
             $result[] = str_replace('/VOD' . '/', '', $baseDir['dir']);
         }
-        
-        
-        $this->logger->warning('UPDATE SUKA HEINA');
-        dump($result);
-        dump(json_encode($result));
-        $this->logger->warning('END!!!!!!');
-        
-        $this->logger->warning($result);
         $this->db->update('tasks_dir', ['status' => 'завершена1', 'results' => json_encode($result)], ['title' => $data['title']]);
-        // return $result;
 
     }
 }

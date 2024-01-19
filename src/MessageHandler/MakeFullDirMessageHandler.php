@@ -30,11 +30,6 @@ class MakeFullDirMessageHandler implements MessageHandlerInterface
 
     public function __invoke(MakeFullDirMessage $message)
     {
-        // $this->makeFullDirMessage->makeFullDir($message);
-
-
-        $this->logger->warning('MAKE CONTENT DIR SEVICE LOGGER');
-
 
         $data = $message->getData();
         $this->db->insert('tasks_dir', [
