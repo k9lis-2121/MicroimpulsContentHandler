@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\VodDirTemplate;
-use App\Repository\VodDirTemplateRepository;
+use App\Repository\TasksDirRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Service\ContentDirHandler\DirMakerService;
 use App\Service\Api\External\Kinopoisk\GetContentInfoService;
@@ -17,8 +17,12 @@ use App\Service\ThumbnailExtractorService;
 use App\Service\FfmpegService;
 use App\Service\Api\Inside\MakeContentDirService;
 use App\Service\Api\Inside\SerialHelperService;
+use App\Service\Queue\MakeFullDirQueueService;
+use App\Message\MakeFullDirMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\SmartyCreatorMessage;
 
-
+use Doctrine\ORM\EntityManagerInterface;
 /*
  
 План:
@@ -60,8 +64,9 @@ class ApiMakerDirController extends AbstractController
         KinopoiskProcessorService $kpProcessor,
         SmartyContentApiService $smartyApi,
         FfmpegService $ffmpeg,
-        MakeContentDirService $makeContentDir,
-        SerialHelperService $serialHelper
+        MakeFullDirQueueService $makeContentDir,
+        SerialHelperService $serialHelper,
+        private MessageBusInterface $bus,
     ) {
         $this->getContentInfo = $getContentInfo;
         $this->kpProcessor = $kpProcessor;
@@ -80,35 +85,63 @@ class ApiMakerDirController extends AbstractController
      * @return Response
      */
     #[Route('/api/maker/dir', name: 'app_api_maker_dir', methods: ['POST'])]
-    public function index(Request $request, VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService): Response
+    public function index(Request $request, TasksDirRepository $taskDirRepository, DirMakerService $dirMakerService, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->get('data'), true);
 
-        $result = $this->makeContentDir->makeFullDir($request, $data);
+        $message = ['data' => $data, 'request' => $request];
+        // $result = $this->makeContentDir->enqueueMakeFullDir($message);
+        $this->bus->dispatch(new MakeFullDirMessage($data));
 
 
-        $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
-        $kinopoiskData = json_decode($kpresponse->getContent(), true);
-        $kinopoiskDataProcessing = $this->kpProcessor->dataProcessing($kinopoiskData);
-        $createdVideoResponse = $this->kpProcessor->sendDataInSmarty($kinopoiskDataProcessing);
 
-        if ($data['isTrailler']) {
 
-            $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result[0] . '/playlist.m3u8');
-            $this->smartyApi->createVideoFile('Трейлер', $createdVideoResponse['id'], ['is_trailer' => 1, 'filename' => $result[0], 'duration' => $duration]);
-            
-        } elseif ($data['isSerial']) {
+        sleep(5);
+        for($i = 0; $i < 100;){
+            $taskDir = $taskDirRepository->findOneBy(['title' => $data['title']]);
+            if ($taskDir == null) {
+                $entityManager->refresh($taskDir);
+                dump('null');
+                $i++;
+            }else{
+                $dirStatus = $taskDir->getStatus();
+                if($dirStatus == 'завершена'){
+                    $i=100;
 
-            $this->serialHelper->makeSeasonAndEpisodeInSmarty($data, $createdVideoResponse['id'], $result);
-            
-        } else {
+                    $result = $taskDir->getResults();
 
-            $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result[0] . '/playlist.m3u8');
-            $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $result[0], 'duration' => $duration]);
+                    dump('succesful');
 
+                    $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
+                    $kinopoiskData = json_decode($kpresponse->getContent(), true);
+
+                    dump('8============)');
+                    dump($data);
+                    $this->bus->dispatch(new SmartyCreatorMessage($data, $kinopoiskData, $result));
+
+                    // $kinopoiskDataProcessing = $this->kpProcessor->dataProcessing($kinopoiskData);
+                    // $createdVideoResponse = $this->kpProcessor->sendDataInSmarty($kinopoiskDataProcessing);
+
+                    // if ($data['isTrailler']) {
+
+                    //     $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result['dir'][0] . '/playlist.m3u8');
+                    //     $this->smartyApi->createVideoFile('Трейлер', $createdVideoResponse['id'], ['is_trailer' => 1, 'filename' => $result[0], 'duration' => $duration]);
+                        
+                    // } elseif ($data['isSerial']) {
+
+                    //     $this->serialHelper->makeSeasonAndEpisodeInSmarty($data, $createdVideoResponse['id'], $result);
+                        
+                    // } else {
+
+                    //     $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result['dir'][0] . '/playlist.m3u8');
+                    //     $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $result['dir'][0], 'duration' => $duration]);
+
+                    // }
+
+
+                }
+            }
         }
-
-
         $response = [
             'message' => 'Запись добавлена',
         ];

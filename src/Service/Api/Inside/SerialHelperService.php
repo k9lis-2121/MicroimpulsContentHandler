@@ -5,7 +5,7 @@ namespace App\Service\Api\Inside;
 use App\Service\Api\External\Smarty\SmartyContentApiService;
 use App\Service\ThumbnailExtractorService;
 use App\Service\FfmpegService;
-
+use App\Service\Queue\ThumbnailQueueService;
 /**
  * Класс управляет созданием сезнов, эпизодов и ассетов в смарти
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
@@ -19,15 +19,23 @@ class SerialHelperService
     private $thumbnailExtractor;
     private $ffmpeg;
 
+    /**
+     * Инициализация вспомогательных сервисов
+     *
+     * @param SmartyContentApiService $smartyApi
+     * @param ThumbnailQueueService $thumbnailExtractor
+     * @param FfmpegService $ffmpeg
+     */
     public function __construct(
         SmartyContentApiService $smartyApi,
-        ThumbnailExtractorService $thumbnailExtractor,
+        ThumbnailQueueService $thumbnailExtractor,
         FfmpegService $ffmpeg,
     )
     {
         $this->smartyApi = $smartyApi;
         $this->thumbnailExtractor = $thumbnailExtractor;
         $this->ffmpeg = $ffmpeg;
+
     }
 
     /**
@@ -94,7 +102,7 @@ class SerialHelperService
                 );
     
                 $contentDir = '/VOD' . '/' . $result['dir'][$resultCount];
-                $this->thumbnailExtractor->extractThumbnails($smartyEpisode['id'], $contentDir);
+                $this->thumbnailExtractor->enqueueThumbnailExtraction($smartyEpisode['id'], $contentDir);
                 
                 $episodeId[$season][$i] = $smartyEpisode['id'];
 

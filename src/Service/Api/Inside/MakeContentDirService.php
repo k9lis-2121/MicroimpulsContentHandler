@@ -5,6 +5,12 @@ namespace App\Service\Api\Inside;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\VodDirTemplateRepository;
 use App\Service\ContentDirHandler\DirMakerService;
+use App\Message\MakeFullDirMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Service\Queue\MakeFullDirQueueService;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Doctrine\DBAL\Connection;
 
 /**
  * Класс управляет директориями контента
@@ -18,22 +24,34 @@ class MakeContentDirService
 
     private $vodDirTemplateRepository;
     private $dirMakerService;
+    private $taskDirManager;
+    private $entityManager;
+    private $logger;
+    private $taskManager;
+    private $messageBus;
+    private $db;
 
-    public function __construct(VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService){
+    public function __construct(Connection $db, MakeFullDirQueueService $taskManager, VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService, MessageBusInterface $messageBus, EntityManagerInterface $entityManager, MakeFullDirQueueService $taskDirManager, LoggerInterface $logger){
         $this->vodDirTemplateRepository = $vodDirTemplateRepository;
         $this->dirMakerService = $dirMakerService;
+        
+        $this->taskDirManager = $taskDirManager;
+        $this->entityManager = $entityManager;
+        $this->logger = $logger;
+        $this->taskManager = $taskManager;
+        $this->messageBus = $messageBus;
+        $this->db = $db;
     }
 
 
-    /**
-     * Сервис создает все директории для контента и возвращает массив с директориями для создания ассетов
-     *
-     * @param request $request
-     * @param array $data
-     * @return array
-     */
-    public function makeFullDir(request $request, array $data): array
+   
+    public function makeFullDir(MakeFullDirMessage $message): void
     {
+        $data = $message->getMessage();
+        $this->logger->warning('MAKE CONTENT DIR SEVICE LOGGER');
+        $task = $this->taskDirManager->createTask($data['title']);
+        $this->bus->dispatch(new MakeFullDirMessage($data));
+        $this->taskDirManager->updateTaskStatus($task, 'queued');
 
         $movie = $this->vodDirTemplateRepository->findOneBy(['title' => 'Фильм']);
         $tmpMovie = $movie->getTemplate();
@@ -47,9 +65,9 @@ class MakeContentDirService
 
 
         $baseDir = $this->dirMakerService->makeBaseDir($data, $template);
-        if ($request->files->get('file')) {
-            $this->dirMakerService->infoFileLoader($request->files->get('file'), $baseDir['dir']);
-        }
+        // if ($data['request']->files->get('file')) {
+        //     $this->dirMakerService->infoFileLoader($data['request']->files->get('file'), $baseDir['dir']);
+        // }
 
         if ($data['isTrailler']) {
             $trailerDir = $this->dirMakerService->makeTraillerDir($data, $tmpMovie . '/trailer');
@@ -73,8 +91,16 @@ class MakeContentDirService
         } else {
             $result[] = str_replace('/VOD' . '/', '', $baseDir['dir']);
         }
-
-        return $result;
+        
+        
+        $this->logger->warning('UPDATE SUKA HEINA');
+        dump($result);
+        dump(json_encode($result));
+        $this->logger->warning('END!!!!!!');
+        
+        $this->logger->warning($result);
+        $this->db->update('tasks_dir', ['status' => 'завершена1', 'results' => json_encode($result)], ['title' => $data['title']]);
+        // return $result;
 
     }
 }

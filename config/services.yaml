@@ -10,15 +10,28 @@ parameters:
     brochures_directory: '%kernel.project_dir%/public/img'
 
 services:
-    App\Service\FfmpegService:
+    App\Service\Queue\ThumbnailQueueService:
+        arguments:
+            $messageBus: '@messenger.default_bus'
+    App\Service\Queue\MakeContentDirService:
         autowire: true
-    App\Service\FileNameParserService:
+    App\MessageHandler\ThumbnailExtractionHandler:
         autowire: true
+        arguments:
+            $thumbnailExtractor: '@App\Service\ThumbnailExtractorService'
     App\Service\ThumbnailExtractorService:
         arguments:
             - '@App\Service\DbAssist\SmartyDbAssistService'
             - '@App\Service\ContentDirHandler\DirMakerService'
             - '@App\Service\FfmpegService'
+            - '@messenger.default_bus'
+    App\Message\ThumbnailExtractionMessage: ~
+    App\Message\MakeFullDirMessage: ~
+    App\Message\SmartyCreatorMessage: ~
+    App\Service\FfmpegService:
+        autowire: true
+    App\Service\FileNameParserService:
+        autowire: true
     App\Service\Api\External\Convertio\ConvertioService:
         autowire: true
     App\Service\Api\External\Kinopoisk\ActorHelperService:
@@ -69,6 +82,8 @@ services:
             - '@App\Service\ImageHandler\ImageConverterService'
             - '@App\Service\ImageHandler\ImageDirectoryHelperService'
             - '@App\Service\Api\External\Convertio\ConvertioService'
+    messenger.middleware.dispatch_after_current:
+        class: Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware
 
     # default configuration for services in *this* file
     _defaults:
@@ -86,3 +101,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+framework:
+    messenger:
+        default_bus: messenger.bus.default
+        buses:
+            messenger.bus.default:
+                middleware:
+                    - messenger.middleware.dispatch_after_current
+                default_middleware: allow_no_handlers
+                # остальная конфигурация...
+        routing:
+            # Маршрутизация сообщений
+            'App\Message\ThumbnailExtractionMessage': thumb_queue

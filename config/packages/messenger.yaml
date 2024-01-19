@@ -1,4 +1,5 @@
 framework:
+    profiler: {only_exceptions: false}
     messenger:
         failure_transport: failed
 
@@ -13,12 +14,20 @@ framework:
                     max_retries: 3
                     multiplier: 2
             failed: 'doctrine://default?queue_name=failed'
+            thumb_queue:
+                dsn: "redis://localhost:6379/3" # указываем базу данных Redis 3
+            dir_queue:
+                dsn: "redis://localhost:6379/4" # указываем базу данных Redis 3
+            smarty_queue:
+                dsn: "redis://localhost:6379/5" # указываем базу данных Redis 3
             # sync: 'sync://'
 
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
+            'App\Message\MakeFullDirMessage': async
+            'App\Message\SmartyCreatorMessage': async
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

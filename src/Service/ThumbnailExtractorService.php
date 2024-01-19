@@ -7,6 +7,9 @@ use Symfony\Component\Finder\Finder;
 use App\Service\DbAssist\SmartyDbAssistService;
 use App\Service\ContentDirHandler\DirMakerService;
 use App\Service\FfmpegService;
+use App\Message\ThumbnailExtractionMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Doctrine\DBAL\Connection;
 
 class ThumbnailExtractorService
 {
@@ -14,13 +17,31 @@ class ThumbnailExtractorService
     private $smartyDb;
     private $dirMaker;
     private $ffmpeg;
+    private $messageBus;
+    private $db;
 
-    public function __construct(SmartyDbAssistService $smartyDb, DirMakerService $dirMaker, FfmpegService $ffmpeg){
+    /**
+     * Инициализация вспомогательных сервисов
+     *
+     * @param MessageBusInterface $messageBus
+     * @param SmartyDbAssistService $smartyDb
+     * @param DirMakerService $dirMaker
+     * @param FfmpegService $ffmpeg
+     */
+    public function __construct(MessageBusInterface $messageBus, SmartyDbAssistService $smartyDb, DirMakerService $dirMaker, FfmpegService $ffmpeg, Connection $db){
         $this->smartyDb = $smartyDb;
         $this->dirMaker = $dirMaker;
         $this->ffmpeg = $ffmpeg;
+        $this->messageBus = $messageBus;
+        $this->db = $db;
     }
 
+    /**
+     * Поиск наилучшего разрешения в файлах
+     *
+     * @param [type] $directory
+     * @return string|null
+     */
     private function findHighestResolution($directory): ?string
     {
         $finder = new Finder();
@@ -40,15 +61,27 @@ class ThumbnailExtractorService
         return $highestResolution;
     }
 
-    public function extractThumbnails(string $episode, $contentDir){
+    /**
+     * Извлечение скриншотов
+     *
+     * @param ThumbnailExtractionMessage $message
+     * @return void
+     * @ticket Здесь можно интегрировать запись статуса в mysql
+     */
+    public function handleThumbnailExtraction(ThumbnailExtractionMessage $message): void
+    {
+        $episode = $message->episode;
+        $contentDir = $message->contentDir;
+
         $workDir = $this->findHighestResolution($contentDir);
         $dirScreen = '/mnt/adddata/panel_v3/public/img/mnt/smarty/tvmiddleware/video/episode/'.$episode;
         $this->dirMaker->makeScreenDir($dirScreen);
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_087.ts', 'screen1.jpg', $dirScreen);
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_088.ts', 'screen2.jpg', $dirScreen);
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_089.ts', 'screen3.jpg', $dirScreen);
-        $sqlResult = $this->smartyDb->setScreenEpisode($episode);
-        return $sqlResult;
+        $this->smartyDb->setScreenEpisode($episode);
+        $this->db->update('tasks_screen', ['status' => 'завершена'], ['episode' => $episode]);
+        // ...
     }
 
 }
