@@ -12,7 +12,8 @@ use App\Service\Api\External\Kinopoisk\GetContentInfoService;
 use App\Message\MakeFullDirMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\SmartyCreatorMessage;
-
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use App\Service\FileInfoLoaderService;
 use Doctrine\ORM\EntityManagerInterface;
 /*
  
@@ -57,9 +58,20 @@ class ApiMakerDirController extends AbstractController
      * @return Response
      */
     #[Route('/api/maker/dir', name: 'app_api_maker_dir', methods: ['POST'])]
-    public function index(Request $request, TasksDirRepository $taskDirRepository, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, TasksDirRepository $taskDirRepository, EntityManagerInterface $entityManager, FileInfoLoaderService $fileInfoLoaderService): Response
     {
         $data = json_decode($request->get('data'), true);
+
+
+        $file = $request->files->get('file');
+
+        if ($file) {
+            $filePath = $file->getPathname();
+            $jsonData = file_get_contents($filePath);
+            $fileData = json_decode($jsonData, true);
+            $fileInfoLoaderService->addContentData($fileData);
+        }    
+
         $this->bus->dispatch(new MakeFullDirMessage($data));
 
         sleep(5);
@@ -67,17 +79,14 @@ class ApiMakerDirController extends AbstractController
             $taskDir = $taskDirRepository->findOneBy(['title' => $data['title']]);
             if ($taskDir == null) {
                 $entityManager->refresh($taskDir);
-                dump('null');
                 $i++;
             } else {
                 $dirStatus = $taskDir->getStatus();
                 if ($dirStatus == 'завершена') {
                     $i = 100;
-
                     $result = $taskDir->getResults();
                     $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
                     $kinopoiskData = json_decode($kpresponse->getContent(), true);
-
                     $this->bus->dispatch(new SmartyCreatorMessage($data, $kinopoiskData, $result));
                 }
             }

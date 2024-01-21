@@ -30,6 +30,8 @@ services:
     App\Message\SmartyCreatorMessage: ~
     App\Service\FfmpegService:
         autowire: true
+    App\Service\FileInfoLoaderService:
+        autowire: true
     App\Service\FileNameParserService:
         autowire: true
     App\Service\Api\External\Convertio\ConvertioService:
@@ -96,7 +98,7 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
+            # - '../src/Entity/'
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed

@@ -11,10 +11,6 @@
           <input type="text" class="form-control" id="title" v-model="formData.title" required>
         </div>
         <div class="form-group">
-          <label for="tlink">Ссылка на торрент</label>
-          <input type="text" class="form-control" id="tlink" v-model="formData.tlink" required>
-        </div>
-        <div class="form-group">
           <label for="file">Загрузить файл</label>
           <input type="file" id="file" ref="fileInput" @change="handleFileChange">
         </div>
@@ -86,7 +82,6 @@
           sameEpisodesCount: false,
           episodesCount: {},
           sameEpisodes: {},
-          tlink: '',
         },
         file: null,
         seasonArray: [],
@@ -134,7 +129,6 @@ kinopoiskId: this.formData.kinopoiskId,
 title: this.formData.title,
 isSerial: this.formData.isSerial,
 isTrailler: this.formData.isTrailler,
-tlink: this.formData.tlink,
 seasonCount: this.formData.seasonCount,
 sameEpisodesCount: this.formData.sameEpisodesCount,
 sameEpisodes: this.formData.sameEpisodes,
@@ -161,7 +155,6 @@ axios.post('/api/maker/dir', formData, {
   //   formData.append('title', this.formData.title);
   //   formData.append('isSerial', this.formData.isSerial);
   //   formData.append('isTrailler', this.formData.isTrailler);
-  //   formData.append('tlink', this.formData.tlink);
   //   formData.append('seasonCount', this.formData.seasonCount);
   //   formData.append('sameEpisodesCount', this.formData.sameEpisodesCount);
   //   formData.append('sameEpisodes', this.formData.sameEpisodes);
