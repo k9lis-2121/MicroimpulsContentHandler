@@ -76,5 +76,6 @@ class MakeFullDirMessageHandler implements MessageHandlerInterface
         
         
         $this->db->update('tasks_dir', ['status' => 'завершена', 'results' => json_encode($result)], ['title' => $data['title']]);
+        $this->db->insert('toast_status', ['component' => 'WorkerDirectoryMaker', 'title' => $data['kinopoiskId'], 'body' => 'Создание директорий завершено', 'viewed' => 0]);
     }
 }

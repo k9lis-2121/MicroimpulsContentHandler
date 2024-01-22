@@ -11,6 +11,7 @@ use App\Service\Api\External\Smarty\SmartyContentApiService;
 use App\Service\FfmpegService;
 use App\Service\Api\Inside\SerialHelperService;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Doctrine\DBAL\Connection;
 
 
 #[AsMessageHandler]
@@ -30,6 +31,7 @@ class SmartyCreatorMessageHandler
         FfmpegService $ffmpeg,
         SerialHelperService $serialHelper,
         private MessageBusInterface $bus,
+        Connection $db,
     )
     {
         $this->getContentInfo = $getContentInfo;
@@ -37,6 +39,7 @@ class SmartyCreatorMessageHandler
         $this->smartyApi = $smartyApi;
         $this->ffmpeg = $ffmpeg;
         $this->serialHelper = $serialHelper;
+        $this->db = $db;
     }
 
     public function __invoke(SmartyCreatorMessage $message)
@@ -65,5 +68,8 @@ class SmartyCreatorMessageHandler
             $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $makeDirResult['dir'][0] . '/playlist.m3u8');
             $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $makeDirResult['dir'][0], 'duration' => $duration]);
         }
+
+        
+        $this->db->insert('toast_status', ['component' => 'WorkerSmartyCreator', 'title' => $data['kinopoiskId'], 'body' => 'Добавление в смарти завершено', 'viewed' => 0]);
     }
 }

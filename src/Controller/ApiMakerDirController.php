@@ -70,29 +70,33 @@ class ApiMakerDirController extends AbstractController
             $jsonData = file_get_contents($filePath);
             $fileData = json_decode($jsonData, true);
             $fileInfoLoaderService->addContentData($fileData);
-        }    
+        }
 
         $this->bus->dispatch(new MakeFullDirMessage($data));
 
-        sleep(5);
-        for ($i = 0; $i < 100;) {
-            $taskDir = $taskDirRepository->findOneBy(['title' => $data['title']]);
-            if ($taskDir == null) {
-                $entityManager->refresh($taskDir);
-                $i++;
-            } else {
-                $dirStatus = $taskDir->getStatus();
-                if ($dirStatus == 'завершена') {
-                    $i = 100;
-                    $result = $taskDir->getResults();
-                    $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
-                    $kinopoiskData = json_decode($kpresponse->getContent(), true);
-                    $this->bus->dispatch(new SmartyCreatorMessage($data, $kinopoiskData, $result));
+        if ($data['uploadToSmarty'] == 'yes') {
+            sleep(5);
+            for ($i = 0; $i < 100;) {
+                $taskDir = $taskDirRepository->findOneBy(['title' => $data['title']]);
+                if ($taskDir == null) {
+                    $entityManager->refresh($taskDir);
+                    $i++;
+                } else {
+                    $dirStatus = $taskDir->getStatus();
+                    if ($dirStatus == 'завершена') {
+                        $i = 100;
+                        $result = $taskDir->getResults();
+                        $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
+                        $kinopoiskData = json_decode($kpresponse->getContent(), true);
+                        $this->bus->dispatch(new SmartyCreatorMessage($data, $kinopoiskData, $result));
+                    }
                 }
             }
         }
         $response = [
-            'message' => 'Запись добавлена',
+            'message' => true,
+            'messageTitle' => $data['kinopoiskId'],
+            'messageBody' => 'Задача поставлена в очередь'
         ];
 
         return $this->json($response);

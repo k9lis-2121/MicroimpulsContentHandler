@@ -1,11 +1,10 @@
 {
   "devDependencies": {
+    "core-js": "^3.30.1",
     "vue": "^2.5.22",
     "vue-loader": "^15.9.0",
     "vue-template-compiler": "^2.5.22",
-    "webpack-notifier": "^1.6.0",
-    
-    "core-js": "^3.30.1"
+    "webpack-notifier": "^1.6.0"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -16,7 +15,8 @@
     "build": "encore production --progress"
   },
   "dependencies": {
+    "@symfony/webpack-encore": "^1.0.0",
     "axios": "^0.21.4",
-    "@symfony/webpack-encore": "^1.0.0"
+    "vue-toasted": "^1.1.28"
   }
 }

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>Content List</h1>
+
+    <table>
+<thead>
+  <tr>
+    <th>Dubs</th>
+    <th>Other Description</th>
+    <th>Ratios</th>
+    <th>Resolutions</th>
+    <th>Subs</th>
+    <th>Torrents</th>
+  </tr>
+</thead>
+<tbody>
+{% for item in contents %}
+  <tr>
+    <td>
+      {% for dub in item.dubs %}
+        {{ dub.dub }}
+        {% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </td>
+    <td>
+      {% for description in item.otherDescription %}
+        {{ description.descriptions }}
+        {% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </td>
+    <td>
+      {% for ratio in item.ratios %}
+        {{ ratio.ratio }}
+        {% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </td>
+    <td>
+      {% for resolution in item.resolutions %}
+        {{ resolution.resolution }}
+        {% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </td>
+    <td>
+      {% for sub in item.subs %}
+        {{ sub.sub }}
+        {% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </td>
+    <td>
+      {% for torrent in item.torrents %}
+        {{ torrent.torrent }}
+        {% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

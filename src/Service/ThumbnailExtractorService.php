@@ -81,6 +81,11 @@ class ThumbnailExtractorService
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_089.ts', 'screen3.jpg', $dirScreen);
         $this->smartyDb->setScreenEpisode($episode);
         $this->db->update('tasks_screen', ['status' => 'завершена'], ['episode' => $episode]);
+        
+        /*
+            не уместное создание статусов для тостов, слишком много будет генерироваться, нужно будет либо переработать воркер, либо как-то группировать задачи по созданию скриншотов для последующей выборки и создания тоста когда все скриншоты готовы
+        */
+        $this->db->insert('toast_status', ['component' => 'WorkerThumbnailExtractor', 'title' => 'episode_id '.$episode , 'body' => 'Создание скриншота, завершено', 'viewed' => 0]);
     }
 
 }

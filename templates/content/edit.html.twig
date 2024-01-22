@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Edit Content {{ content.getId() }}</h1>
+
+    <form action="{{ path('app_content_edit', {'id': content.getId()}) }}" method="POST">
+        {% for ratio in ratios %}
+            <label for="ratio{{ ratio.getId() }}">Ratio:</label>
+            <input type="text" id="ratio{{ ratio.getId() }}" name="ratio{{ ratio.getId() }}" value="{{ ratio.getRatio() }}"><br>
+        {% endfor %}
+
+        {% for dub in dubs %}
+            <label for="dub{{ dub.getId() }}">Dub:</label>
+            <input type="text" id="dub{{ dub.getId() }}" name="dub{{ dub.getId() }}" value="{{ dub.getDub() }}"><br>
+        {% endfor %}
+
+        {% for sub in subs %}
+            <label for="sub{{ sub.getId() }}">Sub:</label>
+            <input type="text" id="sub{{ sub.getId() }}" name="sub{{ sub.getId() }}" value="{{ sub.getSub() }}"><br>
+        {% endfor %}
+
+        {% for resolution in resolutions %}
+            <label for="resolution{{ resolution.getId() }}">Resolution:</label>
+            <input type="text" id="resolution{{ resolution.getId() }}" name="resolution{{ resolution.getId() }}" value="{{ resolution.getResolution() }}"><br>
+        {% endfor %}
+
+        {% for torrent in torrents %}
+            <label for="torrent{{ torrent.getId() }}">Torrent:</label>
+            <input type="text" id="torrent{{ torrent.getId() }}" name="torrent{{ torrent.getId() }}" value="{{ torrent.getTorrent() }}"><br>
+        {% endfor %}
+
+        {% for description in otherDescription %}
+            <label for="description{{ description.getId() }}">Other Description:</label>
+            <textarea id="description{{ description.getId() }}" name="description{{ description.getId() }}">{{ description.getDescriptions() }}</textarea><br>
+        {% endfor %}
+
+        <button type="submit">Save</button>
+    </form>
+
+{% endblock %}

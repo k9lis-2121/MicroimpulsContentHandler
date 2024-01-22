@@ -1,7 +1,30 @@
 <template>
     <div>
-
+<div class="container">
       <form @submit.prevent="submitForm">
+
+        <div class="row">
+  <div class="col-6">
+    <div class="row">
+      <div class="col-4">
+        <label class="form-check-label">Загрузить в смарти</label>
+      </div>
+      <div class="col-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="uploadToSmartyYes" value="yes" v-model="formData.uploadToSmarty" checked>
+          <label class="form-check-label" for="uploadToSmartyYes">Да</label>
+        </div>
+      </div>
+      <div class="col-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="uploadToSmartyNo" value="no" v-model="formData.uploadToSmarty">
+          <label class="form-check-label" for="uploadToSmartyNo">Нет</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
         <div class="form-group">
           <label for="kinopoiskId">Кинопоиск ID</label>
           <input type="text" class="form-control" id="kinopoiskId" v-model="formData.kinopoiskId" required>
@@ -59,13 +82,20 @@
         <pre>{{ JSON.stringify(formData) }}</pre>
       </div>
     </div>
+    </div>
   </template>
   
   <script>
   import axios from 'axios';
-    import Vue from 'vue';
-  
+  import Vue from 'vue';  
+  import VueToasted from 'vue-toasted';
+  Vue.use(VueToasted);
+
   export default {
+    mounted() {
+    // Вызовите функцию для обновления статуса каждые 10 секунд при монтировании компонента
+    this.updateStatusPeriodically();
+  },
     data() {
       return {
 	styles: {
@@ -82,6 +112,7 @@
           sameEpisodesCount: false,
           episodesCount: {},
           sameEpisodes: {},
+          uploadToSmarty: 'yes',
         },
         file: null,
         seasonArray: [],
@@ -132,7 +163,8 @@ isTrailler: this.formData.isTrailler,
 seasonCount: this.formData.seasonCount,
 sameEpisodesCount: this.formData.sameEpisodesCount,
 sameEpisodes: this.formData.sameEpisodes,
-episodesCount: this.formData.episodesCount
+episodesCount: this.formData.episodesCount,
+uploadToSmarty: this.formData.uploadToSmarty
 };
 
 const json = JSON.stringify(data);
@@ -147,30 +179,11 @@ axios.post('/api/maker/dir', formData, {
     }
 })
 
-  // submitForm() {
-  //   const formData = new FormData();
-  //   const episodesCountString = this.createSeasonArrayToString();
-  //   console.log(this.formData.episodesCount);
-  //   formData.append('kinopoiskId', this.formData.kinopoiskId);
-  //   formData.append('title', this.formData.title);
-  //   formData.append('isSerial', this.formData.isSerial);
-  //   formData.append('isTrailler', this.formData.isTrailler);
-  //   formData.append('seasonCount', this.formData.seasonCount);
-  //   formData.append('sameEpisodesCount', this.formData.sameEpisodesCount);
-  //   formData.append('sameEpisodes', this.formData.sameEpisodes);
-  //   formData.append('episodesCount', this.formData.episodesCount);
-  //   formData.append('file', this.file); // Добавление выбранного файла
-
-  //   axios
-  //     .post('/api/maker/dir', formData,  {
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data'
-  //   }
-  // })
       .then((response) => {
         // Обработка успешного ответа
         // console.log(response.data);
         this.isFormSubmitted = true;
+        this.showToast(response);
       })
       .catch((error) => {
         // Обработка ошибки
@@ -178,18 +191,43 @@ axios.post('/api/maker/dir', formData, {
       });
   },
 
-  // submitForm() {
-  //       axios.post('/api/maker/dir', this.formData)
-  //         .then(response => {
-  //           // Обработка успешного ответа
-  //           console.log(response.data);
-  //           this.isFormSubmitted = true;
-  //         })
-  //         .catch(error => {
-  //           // Обработка ошибки
-  //           console.error(error);
-  //         });
-  //     },
+
+
+  updateStatus() {
+  axios.get('/api/status')
+    .then((response) => {
+      this.showToast(response);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+},
+
+showToast(response) {
+  const message = response.data.message;
+  if (message === true) {
+    // Отображаем toast с содержимым из ответа
+    const messageTitle = response.data.messageTitle;
+    const messageBody = response.data.messageBody;
+
+    this.$toasted.show(messageBody, {
+      position: 'top-right',
+      duration: 5000,
+      action: {
+        text: messageTitle,
+        onClick: (e, toastObject) => {
+          toastObject.goAway(0);
+        },
+      },
+    });
+  }
+},
+    // Функция для обновления статуса каждые 10 секунд
+    updateStatusPeriodically() {
+      setInterval(() => {
+        this.updateStatus();
+      }, 10000);
+    },
 
     },
   };
