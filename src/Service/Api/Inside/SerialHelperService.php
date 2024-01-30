@@ -7,13 +7,14 @@ use App\Service\ThumbnailExtractorService;
 use App\Service\FfmpegService;
 use App\Service\Queue\ThumbnailQueueService;
 use Doctrine\DBAL\Connection;
+
 /**
  * Класс управляет созданием сезнов, эпизодов и ассетов в смарти
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
  * @method bool makeSeasonAndEpisodeInSmarty()
  * @version 1.0.0
  */
-class SerialHelperService
+class SerialHelperService implements ScalialHelperServiceInterface
 {
 
     private $smartyApi;

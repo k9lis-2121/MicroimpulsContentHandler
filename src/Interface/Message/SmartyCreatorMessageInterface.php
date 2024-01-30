@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Message;
-use App\Interface\Message\SmartyCreatorMessageInterface;
+namespace App\Interface\Message;
 
 /**
- * Message SmartyCreator
+ * Interface Message SmartyCreator
  * 
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
  * @method array getData()
@@ -12,40 +11,26 @@ use App\Interface\Message\SmartyCreatorMessageInterface;
  * @method array getMakerDirResult()
  * @version 1.0.0
  */
-class SmartyCreatorMessage implements SmartyCreatorMessageInterface
+interface SmartyCreatorMessageInterface
 {
-
-    public function __construct(private array $data = [], private array $getKinopoiskData = [], private array $makeDirResult = [])
-    {
-    }
-
     /**
      * Получить все данные оптравленные воркеру
      *
      * @return array
      */
-    public function getData(): array
-    {
-        return $this->data;
-    }
+    public function getData(): array;
 
     /**
      * Получить данные из кинопоиска
      *
      * @return array
      */
-    public function getKinopoiskData(): array
-    {
-        return $this->getKinopoiskData;
-    }
+    public function getKinopoiskData(): array;
 
     /**
      * Получить список сзданных директорий (в виде массива)
      *
      * @return array
      */
-    public function getMakeDirResult(): array
-    {
-        return $this->makeDirResult;
-    }
+    public function getMakeDirResult(): array;
 }

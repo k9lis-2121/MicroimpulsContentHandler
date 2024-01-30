@@ -2,6 +2,7 @@
 
 namespace App\Service\Api\Inside;
 
+use App\Interface\Service\Api\Inside\MakeContentDirInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\VodDirTemplateRepository;
 use App\Service\ContentDirHandler\DirMakerService;
@@ -18,7 +19,7 @@ use Doctrine\DBAL\Connection;
  * @method array makeFullDir()
  * @version 1.0.0
  */
-class MakeContentDirService
+class MakeContentDirService implements MakeContentDirInterface
 {
 
 
@@ -31,6 +32,18 @@ class MakeContentDirService
     private $messageBus;
     private $db;
 
+    /**
+     * Конструктор
+     *
+     * @param Connection $db
+     * @param MakeFullDirQueueService $taskManager
+     * @param VodDirTemplateRepository $vodDirTemplateRepository
+     * @param DirMakerService $dirMakerService
+     * @param MessageBusInterface $messageBus
+     * @param EntityManagerInterface $entityManager
+     * @param MakeFullDirQueueService $taskDirManager
+     * @param LoggerInterface $logger
+     */
     public function __construct(Connection $db, MakeFullDirQueueService $taskManager, VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService, MessageBusInterface $messageBus, EntityManagerInterface $entityManager, MakeFullDirQueueService $taskDirManager, LoggerInterface $logger){
         $this->vodDirTemplateRepository = $vodDirTemplateRepository;
         $this->dirMakerService = $dirMakerService;
@@ -44,7 +57,12 @@ class MakeContentDirService
     }
 
 
-   
+   /**
+    * Ворекер по созданию директорий
+    *
+    * @param MakeFullDirMessage $message
+    * @return void
+    */
     public function makeFullDir(MakeFullDirMessage $message): void
     {
         $data = $message->getMessage();

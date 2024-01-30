@@ -53,7 +53,6 @@ class TestnversionController extends AbstractController
     public function index(TestnversionRepository $testnversionRepository): Response
     {
         
-       dump($result);
 
             // dump($this->smartyApi->modifyVideo($add['id'], ['poster_url' => 'http://mi-smarty.mycentra.ru/media/upload/tvmiddleware/posters/'.$add['id'].'/ps_poster.jpg']));
                 // dump($this->smartyApi->modifyVideo($add['id'], ['genres' => '33', 'genres' => '12']));

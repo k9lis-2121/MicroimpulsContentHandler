@@ -2,6 +2,14 @@
 
 namespace App\Interfaces\Service;
 
+/**
+ * Парсер и чистильщик строк
+ * 
+ * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @method array getClearName()
+ * @method array getParsingName()
+ * @version 1.0.0
+ */
 interface FileNameParserInterface
 {
     /**

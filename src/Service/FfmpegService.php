@@ -2,13 +2,29 @@
 
 namespace App\Service;
 
+use App\Interfaces\Service\FfmpegInterface;
 use Symfony\Component\Process\Process;
 
-class FfmpegService
+/**
+ * Сервис для работы с ffmpeg
+ * 
+ * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @method void extractThumbnail()
+ * @method int getVideoDuration()
+ * @version 1.0.0
+ */
+class FfmpegService implements FfmpegInterface
 {
     
 
-
+    /**
+     * Метод для извлечения скриншотов из видеофайлов
+     *
+     * @param string $inputFile
+     * @param string $outputFile
+     * @param string $outputDirectory
+     * @return void
+     */
     public function extractThumbnail(string $inputFile, string $outputFile, string $outputDirectory): void
     {
         $ffmpeg = new Process([
@@ -30,6 +46,12 @@ class FfmpegService
         $ffmpeg->mustRun();
     }
 
+    /**
+     * Метод для извлечения длительности видеофайла
+     *
+     * @param string $path
+     * @return integer
+     */
     public function getVideoDuration(string $path): int
     {
         $ffprobe = new Process([

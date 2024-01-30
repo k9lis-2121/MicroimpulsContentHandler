@@ -10,8 +10,14 @@ use App\Service\FfmpegService;
 use App\Message\ThumbnailExtractionMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Doctrine\DBAL\Connection;
+use App\Interfaces\Service\ThumbnailExtractorInterface;
 
-class ThumbnailExtractorService
+/**
+ * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @method void handleThumbnailExtraction()
+ * @version 1.0.0
+ */
+class ThumbnailExtractorService implements ThumbnailExtractorInterface
 {
     
     private $smartyDb;
@@ -39,10 +45,10 @@ class ThumbnailExtractorService
     /**
      * Поиск наилучшего разрешения в файлах
      *
-     * @param [type] $directory
+     * @param string $directory
      * @return string|null
      */
-    private function findHighestResolution($directory): ?string
+    private function findHighestResolution(string $directory): ?string
     {
         $finder = new Finder();
         $finder->directories()->in($directory);
