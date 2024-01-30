@@ -9,10 +9,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class VueMakerDirController extends AbstractController
 {
     #[Route('/vue/maker/dir', name: 'app_vue_maker_dir')]
+    #[Route('/', name: 'app_home')]
     public function index(): Response
     {
         return $this->render('vue_maker_dir/index.html.twig', [
-            'controller_name' => 'VueMakerDirController',
+            'controller_name' => 'Centra MovieMaker',
         ]);
     }
 }

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Статусы задач{% endblock %}
+
+{% block body %}
+    <h1>Статусы задач</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Component</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Viewed</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for toast_status in toast_statuses %}
+            <tr>
+                <td>{{ toast_status.id }}</td>
+                <td>{{ toast_status.component }}</td>
+                <td>{{ toast_status.title }}</td>
+                <td>{{ toast_status.body }}</td>
+                <td>{{ toast_status.viewed ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_toast_status_show', {'id': toast_status.id}) }}">show</a>
+                    <a href="{{ path('app_toast_status_edit', {'id': toast_status.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_toast_status_new') }}">Create new</a>
+{% endblock %}

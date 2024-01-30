@@ -25,6 +25,9 @@ class TasksScreen
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $kp_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class TasksScreen
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getKpId(): ?string
+    {
+        return $this->kp_id;
+    }
+
+    public function setKpId(?string $kp_id): static
+    {
+        $this->kp_id = $kp_id;
 
         return $this;
     }

@@ -55,7 +55,7 @@ class SmartyCreatorMessageHandler
         $createdVideoResponse = $this->kpProcessor->sendDataInSmarty($kinopoiskDataProcessing);
 
         
-
+ 
         if ($data['isTrailler']) {
 
             $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $makeDirResult['dir'][0] . '/playlist.m3u8');
@@ -65,8 +65,8 @@ class SmartyCreatorMessageHandler
             $this->serialHelper->makeSeasonAndEpisodeInSmarty($data, $createdVideoResponse['id'], $makeDirResult);
         } else {
 
-            $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $makeDirResult['dir'][0] . '/playlist.m3u8');
-            $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $makeDirResult['dir'][0], 'duration' => $duration]);
+            $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $makeDirResult[0] . '/playlist.m3u8');
+            $this->smartyApi->createVideoFile('Фильм', $createdVideoResponse['id'], ['filename' => $makeDirResult[0], 'duration' => $duration]);
         }
 
         

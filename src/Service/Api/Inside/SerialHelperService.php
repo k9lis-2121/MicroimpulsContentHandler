@@ -6,6 +6,7 @@ use App\Service\Api\External\Smarty\SmartyContentApiService;
 use App\Service\ThumbnailExtractorService;
 use App\Service\FfmpegService;
 use App\Service\Queue\ThumbnailQueueService;
+use Doctrine\DBAL\Connection;
 /**
  * Класс управляет созданием сезнов, эпизодов и ассетов в смарти
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
@@ -18,6 +19,7 @@ class SerialHelperService
     private $smartyApi;
     private $thumbnailExtractor;
     private $ffmpeg;
+    private $db;
 
     /**
      * Инициализация вспомогательных сервисов
@@ -29,12 +31,14 @@ class SerialHelperService
     public function __construct(
         SmartyContentApiService $smartyApi,
         ThumbnailQueueService $thumbnailExtractor,
-        FfmpegService $ffmpeg,
+        FfmpegService $ffmpeg, 
+        Connection $db
     )
     {
         $this->smartyApi = $smartyApi;
         $this->thumbnailExtractor = $thumbnailExtractor;
         $this->ffmpeg = $ffmpeg;
+        $this->db = $db;
 
     }
 
@@ -102,7 +106,10 @@ class SerialHelperService
                 );
     
                 $contentDir = '/VOD' . '/' . $result['dir'][$resultCount];
-                $this->thumbnailExtractor->enqueueThumbnailExtraction($smartyEpisode['id'], $contentDir);
+                
+                        $this->thumbnailExtractor->enqueueThumbnailExtraction($smartyEpisode['id'], $contentDir);
+                        $this->db->insert('toast_status', ['component' => 'WorkerThumbnailExtractor', 'title' => 'episode_id '.$smartyEpisode['id'] , 'body' => 'Создание скриншота, поставлено в очередь', 'viewed' => 0, 'kp_id' => $data['kinopoiskId']]);
+
                 
                 $episodeId[$season][$i] = $smartyEpisode['id'];
 

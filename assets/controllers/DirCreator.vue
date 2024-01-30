@@ -77,10 +77,10 @@
         <button type="submit" class="btn btn-primary">Отправить</button>
       </form>
       
-      <div v-if="formData">
+      <!-- <div v-if="formData">
         <h3>Заполненные данные:</h3>
         <pre>{{ JSON.stringify(formData) }}</pre>
-      </div>
+      </div> -->
     </div>
     </div>
   </template>

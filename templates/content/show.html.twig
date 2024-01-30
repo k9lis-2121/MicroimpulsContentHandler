@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<h1>Content List</h1>
+<style>
+
+    "rounded": (
+      property: border-radius,
+      class: rounded,
+      values: (
+        null: $border-radius,
+        0: 0,
+        1: $border-radius-sm,
+        2: $border-radius,
+        3: $border-radius-lg,
+        circle: 50%,
+        pill: $border-radius-pill
+      )
+    ),
+    "rounded-top": (
+      property: border-top-left-radius border-top-right-radius,
+      class: rounded-top,
+      values: (null: $border-radius)
+    ),
+    "rounded-end": (
+      property: border-top-right-radius border-bottom-right-radius,
+      class: rounded-end,
+      values: (null: $border-radius)
+    ),
+    "rounded-bottom": (
+      property: border-bottom-right-radius border-bottom-left-radius,
+      class: rounded-bottom,
+      values: (null: $border-radius)
+    ),
+    "rounded-start": (
+      property: border-bottom-left-radius border-top-left-radius,
+      class: rounded-start,
+      values: (null: $border-radius)
+    ),
+    
+</style>
+	<div class="container">
+
+
+		{% for item in contents %}
+
+			<div class="row">
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							ID
+						</b>
+					</div>
+					<div class="col-6">
+						{{ item.id }}
+					</div>
+				</div>
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							KPID
+						</b>
+					</div>
+					<div class="col-6">
+						{{ item.kpId }}
+					</div>
+				</div>
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Season count
+						</b>
+					</div>
+					<div class="col-6">
+						{{ item.seasonCount }}
+					</div>
+				</div>
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							All episodes count
+						</b>
+					</div>
+					<div class="col-6">
+						{{ item.allEpisodeCount }}
+					</div>
+				</div>
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Ratios
+						</b>
+					</div>
+					<div class="col-6">
+						{% for ratio in item.ratios %}
+							{{ ratio.ratio }}
+							{% if not loop.last %}<br>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Resolutions
+						</b>
+					</div>
+					<div class="col-6">
+						{% for resolution in item.resolutions %}
+							{{ resolution.resolution }}
+							{% if not loop.last %}<br>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Dubs
+						</b>
+					</div>
+					<div class="col-6">
+						{% for dub in item.dubs %}
+							{{ dub.dub }}
+							{% if not loop.last %}<br>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Subs
+						</b>
+					</div>
+					<div class="col-6">
+						{% for sub in item.subs %}
+							{{ sub.sub }}
+							{% if not loop.last %}<br>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Description
+						</b>
+					</div>
+					<div class="col-6">
+						{% for desc in item.otherDescription %}
+							{{ desc.descriptions }}
+							{% if not loop.last %}<br>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="row border">
+					<div class="col-2">
+						<b>
+							Torrent links
+						</b>
+					</div>
+					<div class="col-6">
+						{% for torrent in item.torrents %}
+				<a href="{{ torrent.torrent }}">{{ torrent.torrent }}</a>
+							{% if not loop.last %}<br>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+
+
+			{% endfor %}
+		</div>
+
+	<a href="/content/" class="btn btn-secondary text-center mx-auto align-items-center" style="font-size: 85%; height: 35px; width: auto; align-self: center;">Назад</a>
+				
+	</div>
+{% endblock %}

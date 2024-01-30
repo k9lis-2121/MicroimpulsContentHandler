@@ -1,59 +1,119 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>Content List</h1>
+	<h1>Content List</h1>
 
-    <table>
-<thead>
-  <tr>
-    <th>Dubs</th>
-    <th>Other Description</th>
-    <th>Ratios</th>
-    <th>Resolutions</th>
-    <th>Subs</th>
-    <th>Torrents</th>
-  </tr>
-</thead>
-<tbody>
-{% for item in contents %}
-  <tr>
-    <td>
-      {% for dub in item.dubs %}
-        {{ dub.dub }}
-        {% if not loop.last %}<br>{% endif %}
-      {% endfor %}
-    </td>
-    <td>
-      {% for description in item.otherDescription %}
-        {{ description.descriptions }}
-        {% if not loop.last %}<br>{% endif %}
-      {% endfor %}
-    </td>
-    <td>
-      {% for ratio in item.ratios %}
-        {{ ratio.ratio }}
-        {% if not loop.last %}<br>{% endif %}
-      {% endfor %}
-    </td>
-    <td>
-      {% for resolution in item.resolutions %}
-        {{ resolution.resolution }}
-        {% if not loop.last %}<br>{% endif %}
-      {% endfor %}
-    </td>
-    <td>
-      {% for sub in item.subs %}
-        {{ sub.sub }}
-        {% if not loop.last %}<br>{% endif %}
-      {% endfor %}
-    </td>
-    <td>
-      {% for torrent in item.torrents %}
-        {{ torrent.torrent }}
-        {% if not loop.last %}<br>{% endif %}
-      {% endfor %}
-    </td>
-  </tr>
-{% endfor %}
-</tbody>
-</table>
+	<style>
+		.hovered {
+			background-color: white;
+			transition: background-color 0.3s ease;
+		}
+
+		.hovered:hover {
+			background-color: gray;
+		}
+	</style>
+	<div class="container">
+
+		<div class="row table">
+			<div class="col-1">
+				<b>ID</b>
+			</div>
+
+			<div class="col-1">
+				<b>KPID</b>
+			</div>
+
+			<div class="col-1">
+				<b>Season count</b>
+			</div>
+
+			<div class="col-1">
+				<b>All episode count</b>
+			</div>
+			<div class="col-1">
+				<b>Ratios</b>
+			</div>
+			<div class="col-1">
+				<b>Resolutions</b>
+			</div>
+			<div class="col-2">
+				<b>Dubs</b>
+			</div>
+
+			<div class="col-2">
+				<b>Subs</b>
+			</div>
+			{# <div class="col-3">
+							<b>Torrent links</b>
+						</div> #}
+		</div>
+
+		{% for item in contents %}
+			<div class="row hovered align-items-center">
+
+				<div class="col-1 dark align-items-center">
+					{{ item.id }}
+				</div>
+
+				<div class="col-1 align-items-center">
+					{{ item.kpId }}
+				</div>
+
+				<div class="col-1 align-items-center">
+					{{ item.seasonCount }}
+				</div>
+
+				<div class="col-1 align-items-center">
+					{{ item.allEpisodeCount }}
+				</div>
+				<div class="col-1 align-items-center">
+					{% for ratio in item.ratios %}
+						{{ ratio.ratio }}
+						{% if not loop.last %}<br>
+						{% endif %}
+					{% endfor %}
+				</div>
+				<div class="col-1 align-items-center">
+					{% for resolution in item.resolutions %}
+						{{ resolution.resolution }}
+						{% if not loop.last %}<br>
+						{% endif %}
+					{% endfor %}
+				</div>
+				<div class="col-2 align-items-center">
+					{% for dub in item.dubs %}
+						{{ dub.dub }}
+						{% if not loop.last %}<br>
+						{% endif %}
+					{% endfor %}
+				</div>
+
+				<div class="col-2 align-items-center">
+					{% for sub in item.subs %}
+						{{ sub.sub }}
+						{% if not loop.last %}<br>
+						{% endif %}
+					{% endfor %}
+				</div>
+				{# <div class="col-2">
+									{% for torrent in item.torrents %}
+										{{ torrent.torrent }}
+										{% if not loop.last %}<br>
+										{% endif %}
+									{% endfor %}
+								</div> #}
+
+				<div class="col-1 align-items-center">
+
+					<a href="content/{{ item.id }}/show" class="btn btn-secondary text-center mx-auto align-items-center" style="font-size: 85%; height: 35px; width: auto; align-self: center;">Открыть</a>
+				</div>
+
+			</div>
+
+			<hr/>
+		{% endfor %}
+
+	</div>
+
+
 {% endblock %}

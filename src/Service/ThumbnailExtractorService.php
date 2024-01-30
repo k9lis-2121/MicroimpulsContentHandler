@@ -85,7 +85,7 @@ class ThumbnailExtractorService
         /*
             не уместное создание статусов для тостов, слишком много будет генерироваться, нужно будет либо переработать воркер, либо как-то группировать задачи по созданию скриншотов для последующей выборки и создания тоста когда все скриншоты готовы
         */
-        $this->db->insert('toast_status', ['component' => 'WorkerThumbnailExtractor', 'title' => 'episode_id '.$episode , 'body' => 'Создание скриншота, завершено', 'viewed' => 0]);
+        $this->db->update('toast_status', ['component' => 'WorkerThumbnailExtractor', 'title' => 'episode_id '.$episode , 'body' => 'Создание скриншота, завершено', 'viewed' => 0], ['title' => 'episode_id '.$episode]);
     }
 
 }

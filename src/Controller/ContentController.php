@@ -24,6 +24,12 @@ class ContentController extends AbstractController
         $contents = $entityManager->getRepository(Content::class)->findAll();
         foreach($contents as $content){
 
+            $contentArr[$content->getId()]['id'] = $content->getId();
+            $contentArr[$content->getId()]['kpId'] = $content->getKpId();
+            $contentArr[$content->getId()]['seasonCount'] = $content->getSesonCount();
+            $contentArr[$content->getId()]['allEpisodeCount'] = $content->getAllEpisodeCount();
+
+
             $contentArr[$content->getId()]['dubs'] = $entityManager->getRepository(Dubs::class)->findBy(['content_id' => $content->getId()]);
             $contentArr[$content->getId()]['otherDescription'] = $entityManager->getRepository(OtherDescription::class)->findBy(['content_id' => $content->getId()]);
             $contentArr[$content->getId()]['ratios'] = $entityManager->getRepository(Ratios::class)->findBy(['content_id' => $content->getId()]);
@@ -35,6 +41,33 @@ class ContentController extends AbstractController
         dump($contentArr);
 
         return $this->render('content/index.html.twig', [
+            'contents' => $contentArr,
+        ]);
+    }
+
+
+    #[Route('/content/{id}/show', name: 'app_content_show', methods: ['GET'])]
+    public function show(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $content = $entityManager->getRepository(Content::class)->findOneBy(['id' => $id]);
+
+            $contentArr[$content->getId()]['id'] = $content->getId();
+            $contentArr[$content->getId()]['kpId'] = $content->getKpId();
+            $contentArr[$content->getId()]['seasonCount'] = $content->getSesonCount();
+            $contentArr[$content->getId()]['allEpisodeCount'] = $content->getAllEpisodeCount();
+
+
+            $contentArr[$content->getId()]['dubs'] = $entityManager->getRepository(Dubs::class)->findBy(['content_id' => $content->getId()]);
+            $contentArr[$content->getId()]['otherDescription'] = $entityManager->getRepository(OtherDescription::class)->findBy(['content_id' => $content->getId()]);
+            $contentArr[$content->getId()]['ratios'] = $entityManager->getRepository(Ratios::class)->findBy(['content_id' => $content->getId()]);
+            $contentArr[$content->getId()]['resolutions'] = $entityManager->getRepository(Resolutions::class)->findBy(['content_id' => $content->getId()]);
+            $contentArr[$content->getId()]['subs'] = $entityManager->getRepository(Subs::class)->findBy(['content_id' => $content->getId()]);
+            $contentArr[$content->getId()]['torrents'] = $entityManager->getRepository(Torrents::class)->findBy(['content_id' => $content->getId()]);
+        
+
+        dump($contentArr);
+
+        return $this->render('content/show.html.twig', [
             'contents' => $contentArr,
         ]);
     }

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ToastStatus{% endblock %}
+
+{% block body %}
+    <h1>Create new ToastStatus</h1>
+
+    {{ include('toast_status/_form.html.twig') }}
+
+    <a href="{{ path('app_toast_status_index') }}">back to list</a>
+{% endblock %}

@@ -32,6 +32,17 @@ class ToastStatusRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function setViewScreens(string $kpId, int $viewed = 0): void
+    {
+        $this->createQueryBuilder('t')
+            ->update()
+            ->set('t.viewed', ':viewed')
+            ->where('t.kp_id = :kpId')
+            ->setParameter('viewed', $viewed)
+            ->setParameter('kpId', $kpId)
+            ->getQuery()
+            ->execute();
+    }
 //    /**
 //     * @return ToastStatus[] Returns an array of ToastStatus objects
 //     */
