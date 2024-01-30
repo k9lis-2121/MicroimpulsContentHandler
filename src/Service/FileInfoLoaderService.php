@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Service;
+
+use App\Interface\Service\FileInfoLoaderInterface;
+
 use App\Entity\Content;
 use App\Entity\Dubs;
 use App\Entity\OtherDescription;

@@ -2,6 +2,8 @@
 
 namespace App\Service\Api\Inside;
 
+use App\Interface\Service\Api\Inside\SerialHelperInterface;
+
 use App\Service\Api\External\Smarty\SmartyContentApiService;
 use App\Service\ThumbnailExtractorService;
 use App\Service\FfmpegService;
@@ -14,7 +16,7 @@ use Doctrine\DBAL\Connection;
  * @method bool makeSeasonAndEpisodeInSmarty()
  * @version 1.0.0
  */
-class SerialHelperService implements ScalialHelperServiceInterface
+class SerialHelperService implements SerialHelperInterface
 {
 
     private $smartyApi;

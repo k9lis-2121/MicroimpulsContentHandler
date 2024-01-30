@@ -2,7 +2,6 @@
 
 namespace App\Service\Api\Inside;
 
-use App\Interface\Service\Api\Inside\MakeContentDirInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\VodDirTemplateRepository;
 use App\Service\ContentDirHandler\DirMakerService;
@@ -16,10 +15,10 @@ use Doctrine\DBAL\Connection;
 /**
  * Класс управляет директориями контента
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
- * @method array makeFullDir()
+ * @method makeFullDir()
  * @version 1.0.0
  */
-class MakeContentDirService implements MakeContentDirInterface
+class MakeContentDirService
 {
 
 

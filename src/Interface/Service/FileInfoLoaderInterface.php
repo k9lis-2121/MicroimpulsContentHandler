@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Interfaces\Service;
+namespace App\Interface\Service;
 
 /**
  * Класс для обработки массива полученного из info.txt

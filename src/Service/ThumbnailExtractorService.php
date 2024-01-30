@@ -17,7 +17,7 @@ use App\Interfaces\Service\ThumbnailExtractorInterface;
  * @method void handleThumbnailExtraction()
  * @version 1.0.0
  */
-class ThumbnailExtractorService implements ThumbnailExtractorInterface
+class ThumbnailExtractorService
 {
     
     private $smartyDb;
