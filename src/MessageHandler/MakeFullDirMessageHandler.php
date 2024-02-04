@@ -8,6 +8,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Doctrine\DBAL\Connection;
 use App\Repository\VodDirTemplateRepository;
 use App\Service\ContentDirHandler\DirMakerService;
+use App\Service\DiskHandler\CheckFreeSizeService;
 use Psr\Log\LoggerInterface;
 
 #[AsMessageHandler]
@@ -18,14 +19,16 @@ class MakeFullDirMessageHandler implements MessageHandlerInterface
     private $vodDirTemplateRepository;
     private $dirMakerService;
     private $logger;
+    private $disk;
 
-    public function __construct(MakeContentDirService $makeFullDirMessage, Connection $db, VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService, LoggerInterface $logger)
+    public function __construct(MakeContentDirService $makeFullDirMessage, Connection $db, VodDirTemplateRepository $vodDirTemplateRepository, DirMakerService $dirMakerService, LoggerInterface $logger, CheckFreeSizeService $disk)
     {
         $this->makeFullDirMessage = $makeFullDirMessage;
         $this->db = $db;
         $this->vodDirTemplateRepository = $vodDirTemplateRepository;
         $this->dirMakerService = $dirMakerService;
         $this->logger = $logger;
+        $this->disk = $disk;
     }
 
     public function __invoke(MakeFullDirMessage $message)
@@ -39,6 +42,7 @@ class MakeFullDirMessageHandler implements MessageHandlerInterface
         
 
         $movie = $this->vodDirTemplateRepository->findOneBy(['title' => 'Фильм']);
+        $hddNum = $this->disk->getFreeDisk();
         $tmpMovie = $movie->getTemplate();
         $season = $this->vodDirTemplateRepository->findOneBy(['title' => 'Сериал']);
         $tmpSeason = $season->getTemplate();
@@ -61,17 +65,17 @@ class MakeFullDirMessageHandler implements MessageHandlerInterface
         }
 
         if ($data['isTrailler']) {
-            $result[] = str_replace('/VOD' . '/', '', $trailerDir['dir']);
+            $result[] = str_replace('/HDD' . '/' . $data['selectedDisk']. "/VOD/content"."/", '', $trailerDir['dir']);
         } elseif ($data['isSerial']) {
             foreach ($seasonDir as $arr) {
                 foreach ($arr as $key => $value) {
                     if ($key == 'dir') {
-                        $result['dir'][] = str_replace('/VOD' . '/', '', $value);
+                        $result['dir'][] = str_replace('/HDD' . '/' . $data['selectedDisk']. "/VOD/content"."/", '', $value);
                     }
                 }
             }
         } else {
-            $result[] = str_replace('/VOD' . '/', '', $baseDir['dir']);
+            $result[] = str_replace('/HDD' . '/' . $data['selectedDisk']. "/VOD/content"."/", '', $baseDir['dir']);
         }
         
         

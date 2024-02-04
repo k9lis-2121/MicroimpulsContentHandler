@@ -50,6 +50,9 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
     {
         $dataProcessed = $data;
 
+        dump('----------------------------------');
+        dump($data['name']);
+        dump('----------------------------------');
         //Clean string
         $dataProcessed['name'] = $this->stringProcessor->cleanName($data['name']);
         $dataProcessed['description'] = $this->stringProcessor->cleanDescription($data['description']);
@@ -126,6 +129,9 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
         }
 
         $result = $this->smartyApi->createVideo($data['name'], $data['ageRating'], $params);
+        dump('=======================================================');
+        dump('NAME => '.$data['name']);
+        dump($result);
 
         foreach($data['genres'] as $ganre){   
             $name = $ganre['name'];

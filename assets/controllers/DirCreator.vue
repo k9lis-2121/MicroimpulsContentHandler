@@ -81,6 +81,11 @@
         <h3>Заполненные данные:</h3>
         <pre>{{ JSON.stringify(formData) }}</pre>
       </div> -->
+
+      <div v-if="dir">
+        <h3>Путь до директории на сервере:</h3>
+        <pre>{{ dir }}</pre>
+      </div>
     </div>
     </div>
   </template>
@@ -114,6 +119,7 @@
           sameEpisodes: {},
           uploadToSmarty: 'yes',
         },
+        dir: '',
         file: null,
         seasonArray: [],
         seasonArrayConvert: [],
@@ -183,6 +189,7 @@ axios.post('/api/maker/dir', formData, {
         // Обработка успешного ответа
         // console.log(response.data);
         this.isFormSubmitted = true;
+        this.dir = response.data.contentDirectory;
         this.showToast(response);
       })
       .catch((error) => {

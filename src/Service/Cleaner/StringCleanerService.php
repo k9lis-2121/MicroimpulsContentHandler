@@ -28,11 +28,11 @@ class StringCleanerService implements StringCleanerInterface
     private function stringReplacer($str, $type): string
     {
         if($type == 'Full'){
-            $str = preg_replace('/[^a-zA-Zа-яА-Я_\. ]/u', '', $str);
+            $str = preg_replace('/[^a-zA-Zа-яА-Я0-9_\. ]/u', '', $str);
         }elseif($type == 'Name'){
-            $str = preg_replace('/[^a-zA-Zа-яА-Я_\.: ]/u', '', $str);
+            $str = preg_replace('/[^a-zA-Zа-яА-Я0-9_\.: ]/u', '', $str);
         }elseif($type == 'Description'){
-            $str = preg_replace('/[^a-zA-Zа-яА-Я_\.;\n\?\-, ]/u', '', $str);
+            $str = preg_replace('/[^a-zA-Zа-яА-Я0-9_\.;\n\?\-, ]/u', '', $str);
         }
         return $str;
     }

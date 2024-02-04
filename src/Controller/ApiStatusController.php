@@ -91,7 +91,6 @@ class ApiStatusController extends AbstractController
                                     break;
                                 }
                             }
-                            dump($statusLocalId);
                             if ($res) {
                                 foreach ($statusLocalId as $statId) {
                                     $userToastStatus = new UserToastStatus;

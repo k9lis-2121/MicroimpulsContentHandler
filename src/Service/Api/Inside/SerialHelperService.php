@@ -10,6 +10,7 @@ use App\Service\FfmpegService;
 use App\Service\Queue\ThumbnailQueueService;
 use Doctrine\DBAL\Connection;
 
+use Symfony\Component\Process\Process;
 /**
  * Класс управляет созданием сезнов, эпизодов и ассетов в смарти
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
@@ -100,7 +101,30 @@ class SerialHelperService implements SerialHelperInterface
     
             for ($i = 1; $i <= $episodesCount; $i++) {
                 $episodeNum = $this->numStandardizer($i);
-                $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result['dir'][$resultCount] . '/playlist.m3u8');
+
+
+                try {
+                    $duration = $this->ffmpeg->getVideoDuration('/HDD' . '/' . $data['selectedDisk']. "/VOD/content"."/". $result['dir'][$resultCount] . '/playlist.m3u8');
+                
+                } catch (ProcessFailedException $exception) {
+                    $duration = 0;
+                    dump('Я обосрался');
+                    dump($exception);
+                }
+
+
+                
+                
+                
+                
+                
+                if(!isset($duration)){
+                    $duration = 0;
+                }
+                if(!$duration){
+                    $duration = 0;
+                }
+
                 $smartyEpisode = $this->smartyApi->createEpisode(
                     $createdVideoResponse,
                     'Серия ' . $episodeNum,
@@ -108,7 +132,7 @@ class SerialHelperService implements SerialHelperInterface
                     ['duration' => $duration]
                 );
     
-                $contentDir = '/VOD' . '/' . $result['dir'][$resultCount];
+                $contentDir = '/HDD' . '/' . $data['selectedDisk']. "/VOD/content"."/". $result['dir'][$resultCount];
                 
                         $this->thumbnailExtractor->enqueueThumbnailExtraction($smartyEpisode['id'], $contentDir);
                         $this->db->insert('toast_status', ['component' => 'WorkerThumbnailExtractor', 'title' => 'episode_id '.$smartyEpisode['id'] , 'body' => 'Создание скриншота, поставлено в очередь', 'viewed' => 0, 'kp_id' => $data['kinopoiskId']]);
@@ -141,7 +165,7 @@ class SerialHelperService implements SerialHelperInterface
     
             for ($i = 1; $i <= $episodesCount; $i++) {
                 $episodeNum = $this->numStandardizer($i);
-                $duration = $this->ffmpeg->getVideoDuration('/VOD' . '/' . $result['dir'][$resultCount] . '/playlist.m3u8');
+                $duration = $this->ffmpeg->getVideoDuration('/HDD' . '/' . $data['selectedDisk']. "/VOD/content"."/". $result['dir'][$resultCount] . '/playlist.m3u8');
     
                 $this->smartyApi->createVideoFile(
                     'Сезон ' . $seasonNum . ' Серия ' . $episodeNum,

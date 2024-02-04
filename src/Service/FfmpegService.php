@@ -75,6 +75,9 @@ class FfmpegService implements FfmpegInterface
             // Обработка ошибки, если произошла
             // неудачная попытка выполнить команду ffprobe
             return 0;
+        } catch (\Throwable $error) {
+            // Обработка других типов ошибок и исключений
+            return 0;
         }
     }
 

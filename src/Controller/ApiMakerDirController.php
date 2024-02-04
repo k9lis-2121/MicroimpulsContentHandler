@@ -15,6 +15,8 @@ use App\Message\SmartyCreatorMessage;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use App\Service\FileInfoLoaderService;
 use Doctrine\ORM\EntityManagerInterface;
+
+use App\Service\DiskHandler\CheckFreeSizeService;
 /*
  
 План:
@@ -58,10 +60,23 @@ class ApiMakerDirController extends AbstractController
      * @return Response
      */
     #[Route('/api/maker/dir', name: 'app_api_maker_dir', methods: ['POST'])]
-    public function index(Request $request, TasksDirRepository $taskDirRepository, EntityManagerInterface $entityManager, FileInfoLoaderService $fileInfoLoaderService): Response
+    public function index(Request $request, TasksDirRepository $taskDirRepository, EntityManagerInterface $entityManager, FileInfoLoaderService $fileInfoLoaderService, CheckFreeSizeService $checkFreeSizeService): Response
     {
         $data = json_decode($request->get('data'), true);
+        
 
+
+        $hddArr = [1, 11, 14,15,20,21,3,5,8,9];
+
+        foreach($hddArr as $hdd){
+            $allInfo = $checkFreeSizeService->checkFreeSize($hdd);
+            $hddFree[$hdd] = $allInfo['bytes'];            
+        }
+        $freeDisk = max($hddFree);
+        $selectedDisk = array_search($freeDisk, $hddFree);
+        $data['selectedDisk'] = $selectedDisk;
+        dump($data);
+        dump($selectedDisk);
 
         $file = $request->files->get('file');
 
@@ -93,10 +108,18 @@ class ApiMakerDirController extends AbstractController
                 }
             }
         }
+
+        if($data['isSerial']){
+            $contentDirectory = '/HDD'.'/'.$selectedDisk.'/VOD/content/Season'.'/'.$data['kinopoiskId'].'|'.$data['title'];
+        }else{
+            $contentDirectory = '/HDD'.'/'.$selectedDisk.'/VOD/content/Movie'.'/'.$data['kinopoiskId'].'|'.$data['title'];
+        }
+
         $response = [
             'message' => true,
             'messageTitle' => $data['kinopoiskId'],
-            'messageBody' => 'Задача поставлена в очередь'
+            'messageBody' => 'Задача поставлена в очередь',
+            'contentDirectory' => $contentDirectory,
         ];
 
         return $this->json($response);

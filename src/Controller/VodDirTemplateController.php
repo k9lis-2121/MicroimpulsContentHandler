@@ -17,6 +17,7 @@ class VodDirTemplateController extends AbstractController
     #[Route('/', name: 'app_vod_dir_template_index', methods: ['GET'])]
     public function index(VodDirTemplateRepository $vodDirTemplateRepository): Response
     {
+        
 
         $all = $vodDirTemplateRepository->findAll();
         foreach($all as $string){

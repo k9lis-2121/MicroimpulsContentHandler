@@ -5,8 +5,29 @@
 {% block body %}
 
     <h1 style="font-family: 'Daxline', sans-serif;"> {{ controller_name }}</h1>
+    <div class="container">
+        <div class="row" style="padding: 24px;">
+        
+        <div class="row" style="padding: 0px 10px 5px;">
+            Свободное место на дисках VOD сервера:
+        </div>
+            <div class="col-2">
+                <div class="row">{{disks[0] | raw}}</div>
+                <div class="row">{{disks[1] | raw}}</div>
+                <div class="row">{{disks[2] | raw}}</div>
+                <div class="row">{{disks[3] | raw}}</div>
+                <div class="row">{{disks[4] | raw}}</div>
+            </div>
+            <div class="col-2">
+                <div class="row">{{disks[5] | raw}}</div>
+                <div class="row">{{disks[6] | raw}}</div>
+                <div class="row">{{disks[7] | raw}}</div>
+                <div class="row">{{disks[8] | raw}}</div>
+                <div class="row">{{disks[9] | raw}}</div>
+            </div>
+        </div>
+    </div>
 
-
-<div id="dircreator"></div>
+    <div id="dircreator"></div>
 
 {% endblock %}

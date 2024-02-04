@@ -24,7 +24,7 @@ class DirMakerService
     }
 
     private function makeContentDir($path){
-
+        
         $filesystem = new Filesystem();
         try {
 
@@ -60,7 +60,7 @@ class DirMakerService
 
     private function setTemplate($data, $template){
         $dirData = [
-            'base_dir' => $this->vodDir,
+            'base_dir' => "/HDD"."/".$data['selectedDisk']."/VOD",//$this->vodDir,
             'kp_id' => $data['kinopoiskId'],
             'name' => $data['title'],
         ];
