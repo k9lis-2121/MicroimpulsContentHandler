@@ -43,6 +43,34 @@ class ToastStatusRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+
+    public function getToast(int $userId): array
+    {
+        $qb = $this->createQueryBuilder('ts');
+        $qb->leftJoin('App\Entity\UserToastStatus', 'uts', 'WITH', 'ts.id = uts.toast_id AND uts.user_id = :userId')
+           ->where($qb->expr()->neq('ts.component', ':component'))
+           ->setParameter('component', 'WorkerThumbnailExtractor')
+           ->andWhere($qb->expr()->isNull('uts.id'))
+           ->setParameter('userId', $userId);
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+    public function getToastThumbnailExtractor(int $userId): array
+    {
+        $component = 'WorkerThumbnailExtractor';
+
+        $qb = $this->createQueryBuilder('ts');
+        $qb->leftJoin('App\Entity\UserToastStatus', 'uts', 'WITH', 'ts.id = uts.toast_id AND uts.user_id = :userId')
+           ->where($qb->expr()->eq('ts.component', ':component'))
+           ->setParameter('component', $component)
+           ->setParameter('userId', $userId);
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return ToastStatus[] Returns an array of ToastStatus objects
 //     */

@@ -11,6 +11,7 @@ use App\Message\ThumbnailExtractionMessage;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Doctrine\DBAL\Connection;
 use App\Interfaces\Service\ThumbnailExtractorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
@@ -25,6 +26,7 @@ class ThumbnailExtractorService
     private $ffmpeg;
     private $messageBus;
     private $db;
+    private $episodeDir;
 
     /**
      * Инициализация вспомогательных сервисов
@@ -34,12 +36,13 @@ class ThumbnailExtractorService
      * @param DirMakerService $dirMaker
      * @param FfmpegService $ffmpeg
      */
-    public function __construct(MessageBusInterface $messageBus, SmartyDbAssistService $smartyDb, DirMakerService $dirMaker, FfmpegService $ffmpeg, Connection $db){
+    public function __construct(ParameterBagInterface $parameterBag, MessageBusInterface $messageBus, SmartyDbAssistService $smartyDb, DirMakerService $dirMaker, FfmpegService $ffmpeg, Connection $db){
         $this->smartyDb = $smartyDb;
         $this->dirMaker = $dirMaker;
         $this->ffmpeg = $ffmpeg;
         $this->messageBus = $messageBus;
         $this->db = $db;
+        $this->episodeDir = $parameterBag->get('kernel.project_dir').'/'.$parameterBag->get('SMARTY_IMAGE_EPISODE_SCREENS_DIR');
     }
 
     /**
@@ -80,7 +83,9 @@ class ThumbnailExtractorService
         $contentDir = $message->contentDir;
 
         $workDir = $this->findHighestResolution($contentDir);
-        $dirScreen = '/mnt/adddata/panel_v3/public/img/mnt/smarty/tvmiddleware/video/episode/'.$episode;
+        $dirScreen = $this->episodeDir.$episode;
+        dump($dirScreen);
+        dump($contentDir.'/'.$workDir.'/'.$workDir.'_087.ts');
         $this->dirMaker->makeScreenDir($dirScreen);
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_087.ts', 'screen1.jpg', $dirScreen);
         $this->ffmpeg->extractThumbnail($contentDir.'/'.$workDir.'/'.$workDir.'_088.ts', 'screen2.jpg', $dirScreen);

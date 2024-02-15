@@ -28,13 +28,21 @@ class ApiStatusController extends AbstractController
             'messageBody' => null,
         ];
         $result = false;
-
-        //Получаем все уведомления
-        $toasts = $toastStatusRepository->findAll();
-
+        
         //получаем id пользователя
         $user = $this->getUser();
+        dump($user);
+        if($user == null){
+            $response = [
+                'message' => true,
+                'messageTitle' => 'ОШИБКА',
+                'messageBody' => 'Не получен user id',
+            ];
+            return $this->json($response);
+        }
         $userId = $user->getId();
+        //Получаем все уведомления
+        $toasts = $toastStatusRepository->getToast($userId);
 
         if ($toasts != null) {
             $result = true;

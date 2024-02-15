@@ -16,16 +16,16 @@ interface SmartyCreatorMessageInterface
     /**
      * Получить все данные оптравленные воркеру
      *
-     * @return array
+     * 
      */
-    public function getData(): array;
+    public function getData();
 
     /**
      * Получить данные из кинопоиска
      *
-     * @return array
+     * 
      */
-    public function getKinopoiskData(): array;
+    public function getKinopoiskData();
 
     /**
      * Получить список сзданных директорий (в виде массива)

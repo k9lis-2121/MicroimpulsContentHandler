@@ -12,12 +12,14 @@
 import Vue from 'vue';
 import './styles/app.css';
 import DirCreator from "./controllers/DirCreator";
-
-
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉')
-console.log('342342342423')
+import Search from "./controllers/Search";
 
     new Vue({
         el: '#dircreator',
         render: h => h(DirCreator)
+    });
+
+    new Vue({
+        el: '#search',
+        render: h => h(Search)
     });

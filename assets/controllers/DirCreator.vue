@@ -1,6 +1,6 @@
 <template>
     <div>
-<div class="container">
+  <div v-if="!isFormSubmitted" class="container">
       <form @submit.prevent="submitForm">
 
         <div class="row">
@@ -19,6 +19,29 @@
         <div class="form-check">
           <input type="radio" class="form-check-input" id="uploadToSmartyNo" value="no" v-model="formData.uploadToSmarty">
           <label class="form-check-label" for="uploadToSmartyNo">Нет</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-6">
+    <div class="row">
+      <div class="col-4">
+        <label class="form-check-label">Создать директории</label>
+      </div>
+      <div class="col-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="createDirectoryYes" value="yes" v-model="formData.createDirectory" checked>
+          <label class="form-check-label" for="createDirectoryYes">Да</label>
+        </div>
+      </div>
+      <div class="col-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="createDirectoryNo" value="no" v-model="formData.createDirectory">
+          <label class="form-check-label" for="createDirectoryNo">Нет</label>
         </div>
       </div>
     </div>
@@ -46,10 +69,6 @@
           <label class="form-check-label" for="isTrailler">Трейлер</label>
         </div>
         <div v-if="formData.isSerial && !formData.isTrailler">
-          <!-- <div class="form-group">
-            <label for="seasonCount">Количество сезонов</label>
-            <input type="number" class="form-control" id="seasonCount" v-model="formData.seasonCount" required>
-          </div> -->
             <div class="form-group">
             <label for="seasonCount">Количество сезонов</label>
             <input type="number" class="form-control" id="seasonCount" v-model="formData.seasonCount" required @input="createSeasonArray">
@@ -73,20 +92,51 @@
               <input type="number" class="form-control" id="sameEpisodes" v-model="formData.sameEpisodes" @input="createSeasonArrayConvert" placeholder="Количество серий">
             </div>
           </div>
+        
         </div>
+          <!-- Новый чекбокс для транскодирования -->
+          <div class="form-check mt-3">
+          <input type="checkbox" class="form-check-input" id="transcode" v-model="formData.transcode">
+          <label class="form-check-label" for="transcode">Транскодировать</label>
+        </div>
+
+        <!-- Поле для ввода имени файла, появляется если transcode == true -->
+        <div v-if="formData.transcode" class="form-group mt-3">
+          <label for="fileName">Имя файла</label>
+          <input type="text" class="form-control" id="fileName" v-model="formData.fileName">
+        </div>
+
+
+
+
+         <!-- Новый чекбокс для транскодирования -->
+        <div class="form-check mt-3">
+          <input type="checkbox" class="form-check-input" id="handhdd" v-model="formData.handhdd">
+          <label class="form-check-label" for="handhdd">Указать диск в ручную</label>
+        </div>
+
+        <!-- Поле для ввода имени файла, появляется если transcode == true -->
+        <div v-if="formData.handhdd" class="form-group mt-3">
+          <label for="selectedDisk">Номер диска</label>
+          <input type="text" class="form-control" id="selectedDisk" v-model="formData.selectedDisk">
+        </div>
+
+
+
+
         <button type="submit" class="btn btn-primary">Отправить</button>
       </form>
+      <!-- Сообщение о загрузке -->
+    
       
-      <!-- <div v-if="formData">
-        <h3>Заполненные данные:</h3>
-        <pre>{{ JSON.stringify(formData) }}</pre>
-      </div> -->
-
-      <div v-if="dir">
+    </div>
+    <div v-if="loading">
+      <h3>Загрузка...</h3>
+    </div>
+    <div v-if="dir">
         <h3>Путь до директории на сервере:</h3>
         <pre>{{ dir }}</pre>
       </div>
-    </div>
     </div>
   </template>
   
@@ -99,6 +149,7 @@
   export default {
     mounted() {
     // Вызовите функцию для обновления статуса каждые 10 секунд при монтировании компонента
+    this.resetForm();
     this.updateStatusPeriodically();
   },
     data() {
@@ -108,6 +159,22 @@
         color: 'white',
         fontSize: '16px'
       },
+      initialFormData: () => ({
+        kinopoiskId: '',
+        title: '',
+        isSerial: false,
+        isTrailler: false,
+        seasonCount: '',
+        sameEpisodesCount: false,
+        episodesCount: {},
+        sameEpisodes: {},
+        uploadToSmarty: 'yes',
+        createDirectory: 'yes',
+        transcode: false,
+        fileName: '',
+        handhdd: false,
+        selectedDisk: 0,
+      }),
         formData: {
           kinopoiskId: '',
           title: '',
@@ -118,11 +185,18 @@
           episodesCount: {},
           sameEpisodes: {},
           uploadToSmarty: 'yes',
+          createDirectory: 'yes',
+          transcode: false, // Добавлено для транскодирования
+          
+        handhdd: false,
+        selectedDisk: 0,
+        fileName: '' // Имя файла при транскодировании
         },
         dir: '',
         file: null,
         seasonArray: [],
         seasonArrayConvert: [],
+        loading: false,
         isFormSubmitted: false,
       };
     },
@@ -170,35 +244,62 @@ seasonCount: this.formData.seasonCount,
 sameEpisodesCount: this.formData.sameEpisodesCount,
 sameEpisodes: this.formData.sameEpisodes,
 episodesCount: this.formData.episodesCount,
-uploadToSmarty: this.formData.uploadToSmarty
+uploadToSmarty: this.formData.uploadToSmarty,
+createDirectory: this.formData.createDirectory,
+transcode: this.formData.transcode,
+fileName: this.formData.fileName,
+handhdd: this.formData.handhdd,
+selectedDisk: this.formData.selectedDisk
 };
+
+  this.loading = true;
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(this.formData));
+      if (this.file) {
+        formData.append('file', this.file);
+      }
 
 const json = JSON.stringify(data);
 
-const formData = new FormData();
+// const formData = new FormData();
 formData.append('data', json);
 formData.append('file', this.file);
 
+this.isFormSubmitted = true;
 axios.post('/api/maker/dir', formData, {
     headers: {
         'Content-Type': 'multipart/form-data'
     }
-})
+    
+}
+
+)
 
       .then((response) => {
         // Обработка успешного ответа
         // console.log(response.data);
-        this.isFormSubmitted = true;
+        
+        this.isFormSubmitted = false;
         this.dir = response.data.contentDirectory;
         this.showToast(response);
+        this.resetForm(); // Сброс формы
       })
       .catch((error) => {
         // Обработка ошибки
         console.error(error);
+        this.showToast("Ошибка при отправке данных");
       });
   },
 
-
+  resetForm() {
+      // Сброс formData к начальным значениям
+      this.formData = this.initialFormData();
+      this.file = null;
+      this.seasonArray = [];
+      this.isFormSubmitted = false;
+      // Обнуление асинхронного индикатора загрузки, если это необходимо
+      setTimeout(() => this.loading = false, 0);
+    },
 
   updateStatus() {
   axios.get('/api/status')

@@ -80,9 +80,6 @@ class DirMakerService
             $dirData['trailer'] = $data['trailer'];
         }
 
-        dump('SET TEMPLATE');
-        dump($template);
-
         $parsedTemplate = strtr('{base_dir}/'.$template, $dirData);
         $parsedTemplate = str_replace('{', '', $parsedTemplate);
         $parsedTemplate = str_replace('}', '', $parsedTemplate);

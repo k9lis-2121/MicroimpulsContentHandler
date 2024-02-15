@@ -110,6 +110,8 @@ class PretrainingDataService implements PretrainingDataInterface
      */
     public function searchFilmDirector(array $persons): string
     {
+        
+        $director = 'Нет данных';
         foreach ($persons as $key => $value) {
             if ($value['enProfession'] === 'director') {
                 // Массив с "enProfession" равным "director" найден
@@ -119,6 +121,9 @@ class PretrainingDataService implements PretrainingDataInterface
         }
         if(isset($foundArray)){
             $director = $persons[$foundArray]['name'];
+            if($director == null){
+                $director = 'Нет данных';
+            }
         }
 
         return $director;

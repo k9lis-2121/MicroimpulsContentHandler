@@ -2,6 +2,8 @@
 
 namespace App\Service\DiskHandler;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
 /**
  * Сервис для работы с диском
  *  
@@ -12,7 +14,14 @@ namespace App\Service\DiskHandler;
  */
 class CheckFreeSizeService
 {
-    private array $hddArray = [1, 11, 14,15,20,21,3,5,8,9];
+    private array $hddArray;
+
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
+        $this->hddArray = explode(',', $parameterBag->get("HDD_ARRAY"));
+    }
+
+
     /**
      * Получить информацию о свободном месте на диске
      *
@@ -53,5 +62,23 @@ class CheckFreeSizeService
         $selectedDisk = array_search($freeDisk, $hddFree);
 
         return $selectedDisk;
+    }
+
+    public function getAllDiskFreeSpace():array
+    {
+        foreach($this->hddArray as $hdd){
+            $allInfo = $this->checkFreeSize($hdd);
+            if($allInfo['bytes'] < 500000000000){
+                $hddFree[] = "<b class='text-danger' title='".$allInfo['bytes']." bytes'>".$allInfo['string']."</b>";
+            }elseif($allInfo['bytes'] < 1000000000000){
+                $hddFree[] = "<b style='color: #a67e06;' title='".$allInfo['bytes']." bytes'>".$allInfo['string']."</b>";
+            }elseif($allInfo['bytes'] > 1000000000000){
+                $hddFree[] = "<b class='text-success' title='".$allInfo['bytes']." bytes'>".$allInfo['string']."</b>";
+            }else{                
+                $hddFree[] = "<b class='text-secondary' title='".$allInfo['bytes']." bytes'>".$allInfo['string']."</b>";
+            }
+            
+        }
+        return $hddFree;
     }
 }

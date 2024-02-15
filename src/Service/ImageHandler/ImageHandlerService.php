@@ -100,14 +100,11 @@ class ImageHandlerService implements ImageHandlerInterface
         // Полный путь до файла
         $filePath = $this->publicPath . '/public/img/tmp/' . $uniqueFileName;
 
-        dump($filePath);
-
         // Сохраняем файл
         file_put_contents($filePath, $fileContents);
 
         $newFilePath = $this->processFileWithExiftool($filePath);
         unlink($filePath);
-        dump($newFilePath);
         $this->convertedFile = $newFilePath;
         return $newFilePath;
     }
@@ -124,17 +121,11 @@ class ImageHandlerService implements ImageHandlerInterface
         if($converter == 'default'){
             $pathToImg = $this->douwnloadImage($img);
             $converting = $this->converterDefault->convertToJpg($pathToImg);
-            dump('convertToJpg');
-            dump($converting);
             return $converting;
         }elseif($converter == 'convertio'){
             $converting = $this->converterApi->convertioToJpg($img);
-            dump('convertertioToJPG');
-            dump($converting);
             return $converting;
         }else{
-            dump($img);
-            dump($converter);
             return 'Что-то пошло не так';
         }
         
@@ -149,8 +140,6 @@ class ImageHandlerService implements ImageHandlerInterface
      */
     public function loadImageToSmarty(int $videoId, string $sourcePath): bool
     {
-        dump('source');
-        dump($this->convertedFile);
         $targetDirectory = $this->imgDirHelper->createDirectory($videoId);
         $this->imgDirHelper->moveImagesToDirectory($this->convertedFile, $targetDirectory, 'pb_poster.jpg');
         return true;
@@ -166,8 +155,6 @@ class ImageHandlerService implements ImageHandlerInterface
      */
     public function loadActorImageToSmarty(string $id): string
     {
-        dump('source');
-        dump($this->convertedFile);
         $targetDirectory = '/mnt/adddata/panel_v3/public/img/mnt/smarty/tvmiddleware/actors';
         $this->imgDirHelper->moveImagesToDirectory($this->convertedFile, $targetDirectory, $id.'.png');
 

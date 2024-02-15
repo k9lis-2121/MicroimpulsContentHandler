@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TranscodingProcesses{% endblock %}
+
+{% block body %}
+    <h1>TranscodingProcesses</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ transcoding_process.id }}</td>
+            </tr>
+            <tr>
+                <th>FilmName</th>
+                <td>{{ transcoding_process.FilmName }}</td>
+            </tr>
+            <tr>
+            <th>HDD</th>
+            <td>{{ transcoding_process.Hdd }}</td>
+        </tr>
+            <tr>
+                <th>StartTime</th>
+                <td>{{ transcoding_process.StartTime ? transcoding_process.StartTime|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndTime</th>
+                <td>{{ transcoding_process.EndTime ? transcoding_process.EndTime|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ transcoding_process.Status }}</td>
+            </tr>
+            <tr>
+                <th>PID</th>
+                <td>{{ transcoding_process.PID }}</td>
+            </tr>
+            <tr>
+                <th>Progress</th>
+                <td>{{ transcoding_process.Progress }}</td>
+            </tr>
+            <tr>
+                <th>CtreatedAt</th>
+                <td>{{ transcoding_process.CtreatedAt ? transcoding_process.CtreatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdateAt</th>
+                <td>{{ transcoding_process.UpdateAt ? transcoding_process.UpdateAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>TranscodingSettings</th>
+                <td>{{ transcoding_process.TranscodingSettings }}</td>
+            </tr>
+            <tr>
+                <th>UserSubmittedBy</th>
+                <td>{{ transcoding_process.UserSubmittedBy }}</td>
+            </tr>
+            <tr>
+                <th>ErrorMessage</th>
+                <td>{{ transcoding_process.ErrorMessage }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_transcoding_processes_index') }}">back to list</a>
+
+    {# <a href="{{ path('app_transcoding_processes_edit', {'id': transcoding_process.id}) }}">edit</a> #}
+
+    {# {{ include('transcoding_processes/_delete_form.html.twig') }} #}
+{% endblock %}

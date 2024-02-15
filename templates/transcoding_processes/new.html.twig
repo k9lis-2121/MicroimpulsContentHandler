@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TranscodingProcesses{% endblock %}
+
+{% block body %}
+    <h1>Create new TranscodingProcesses</h1>
+
+    {{ include('transcoding_processes/_form.html.twig') }}
+
+    <a href="{{ path('app_transcoding_processes_index') }}">back to list</a>
+{% endblock %}

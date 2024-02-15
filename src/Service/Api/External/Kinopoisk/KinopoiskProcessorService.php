@@ -14,7 +14,7 @@ use App\Interface\Service\Api\External\Kinopoisk\ActorHelperInterface;
 * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
 * @api Кинопоиск
 * @method object dataProcessing()
-* @version 1.0.2
+* @version 1.0.3
 */
 class KinopoiskProcessorService implements KinopoiskProcessorInterface
 {
@@ -94,48 +94,62 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
     }
 
 
-    public function sendDataInSmarty(array $data){
-        dump($data['actors']);
+    public function sendDataInSmarty($data, $selectedDisk){
+        // dump($data['actors']);
 
 
-       if($data['is_season']){
+       if($data->isIsSeason()){
         $genre = 33;
        }else{
         $genre = 34;
        }
+
+       $streamServiceArr = [
+        1 => 21,
+        11 => 22,
+        14 => 23,
+        15 => 24,
+        20 => 25,
+        21 => 26,
+        3 => 27,
+        5 => 27,
+        8 => 29,
+        9 => 30
+       ];
         
+       if($data->isIsSeason() == ''){
+        $isSeason = 0;
+       }else{
+        $isSeason = 1;
+       }
+
         $params = 
         [
-            'name' => $data['name'],
-            'name_orig' => $data['name_orig'],
-            'description' => $data['description'],
-            'year' => $data['year'],
-            'countries' => $data['countries'],
-            'stream_services' => 4,
+            'name' => $data->getName(),
+            'name_orig' => $data->getNameOrig(),
+            'description' => $data->getDescription(),
+            'year' => $data->getYear(),
+            'countries' => $data->getCountries(),
+            'stream_services' => $streamServiceArr[$selectedDisk],
             // 'actors_set' => 1,
-            'kinopoisk_rating' => $data['kinopoisk_rating'],
-            'imdb_rating' => $data['imdb_rating'],
-            'duration' => $data['duration'],
-            'is_season' => $data['is_season'],
-            'parent_control' => $data['parent_control'],
+            'kinopoisk_rating' => $data->getKinopoiskRating(),
+            'imdb_rating' => $data->getImdbRating(),
+            'duration' => $data->getDuration(),
+            'is_season' => $isSeason,
+            'parent_control' => $data->getParentControl(),
         ];
 
 
         /*
             костыль
         */
-        if($data['ageRating'] == null){
-            $data['ageRating'] = 0;
-        }
+        // if($data->getAgeRating() == null){
+        //     $data['ageRating'] = 0;
+        // }
 
-        $result = $this->smartyApi->createVideo($data['name'], $data['ageRating'], $params);
-        dump('=======================================================');
-        dump('NAME => '.$data['name']);
-        dump($result);
-
-        foreach($data['genres'] as $ganre){   
+        $result = $this->smartyApi->createVideo($data->getName(), $data->getAgeRating(), $params);
+        foreach($data->getGenres() as $ganre){   
             $name = $ganre['name'];
-            dump($name);     
             $response[] = $this->smartyDb->searchGenre($name);
         }
         $categories[0] = $genre;
@@ -146,7 +160,7 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
         dump($categories);
 
         $this->smartyDb->setVid($result['id']);
-        $this->smartyDb->setKinopoiskId($data['id']);
+        $this->smartyDb->setKinopoiskId((int)$data->getKinopoiskId());
         $this->smartyDb->setGenres($categories);
         $this->smartyDb->setAdditionalTariffs([15, 19]);
         $this->smartyDb->setPosterUrl('upload/tvmiddleware/posters/'.$result['id'].'/pb_poster.jpg');
@@ -169,8 +183,8 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
 
 
         dump('url to poster');
-        dump($data['poster']['url']);
-        $tmpImgDir = $this->imgHandler->imageConvert($data['poster']['url'], 'default');
+        dump($data->getPoster());
+        $tmpImgDir = $this->imgHandler->imageConvert($data->getPoster(), 'default');
         dump($tmpImgDir);
 
         $this->imgHandler->loadImageToSmarty($result['id'], $tmpImgDir);

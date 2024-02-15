@@ -110,6 +110,12 @@ class SmartyDbAssistService implements SmartyDbAssistInterface
         $this->dbQuery->smartyDbQuery($sql);
     }
 
+    public function getVideoIdByKinopoiskId($kinopoiskId)
+    {
+        $sql = "SELECT id FROM smarty.tvmiddleware_video WHERE kinopoisk_id = '".$kinopoiskId."';";
+        return $this->dbQuery->smartyDbQuery($sql);
+    }
+
     // public function setTariffForVideo(array $id)
     // {
     //     $sql =  "INSERT INTO smarty.tvmiddleware_video_tariffs (video_id, tariff_id) VALUES(".$id['video'].", ".$id['tariffid'].");";

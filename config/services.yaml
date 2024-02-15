@@ -8,8 +8,14 @@ parameters:
     kp_base_url: '%env(KP_BASE_URL)%'
     kp_version_api: '%env(KP_VERSION_API)%'
     brochures_directory: '%kernel.project_dir%/public/img'
+    SMARTY_IMAGE_EPISODE_SCREENS_DIR: '%env(SMARTY_IMAGE_EPISODE_SCREENS_DIR)%'
+    HDD_ARRAY: '%env(HDD_ARRAY)%'
+    TRANSCODE_ENDPOINT: '%env(TRANSCODE_ENDPOINT)%'
 
 services:
+    App\Service\Utils\GetGlobalOptionService:
+        arguments:
+            $parameterBag: '@parameter_bag'
     App\Service\Queue\ThumbnailQueueService:
         arguments:
             $messageBus: '@messenger.default_bus'

@@ -15,16 +15,15 @@ use App\Interface\Message\SmartyCreatorMessageInterface;
 class SmartyCreatorMessage implements SmartyCreatorMessageInterface
 {
 
-    public function __construct(private array $data = [], private array $getKinopoiskData = [], private array $makeDirResult = [])
+    public function __construct(private $data, private $getKinopoiskData, private array $makeDirResult = [], private $selectedDisk)
     {
     }
 
     /**
      * Получить все данные оптравленные воркеру
      *
-     * @return array
      */
-    public function getData(): array
+    public function getData()
     {
         return $this->data;
     }
@@ -32,9 +31,8 @@ class SmartyCreatorMessage implements SmartyCreatorMessageInterface
     /**
      * Получить данные из кинопоиска
      *
-     * @return array
      */
-    public function getKinopoiskData(): array
+    public function getKinopoiskData()
     {
         return $this->getKinopoiskData;
     }
@@ -47,5 +45,9 @@ class SmartyCreatorMessage implements SmartyCreatorMessageInterface
     public function getMakeDirResult(): array
     {
         return $this->makeDirResult;
+    }
+
+    public function getSelectedDisk(){
+        return $this->selectedDisk;
     }
 }

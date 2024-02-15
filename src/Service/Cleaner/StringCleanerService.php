@@ -63,11 +63,14 @@ class StringCleanerService implements StringCleanerInterface
     }
     
     /**
-    * @param string $str строка которую нужно очистить
+    * @param string|mull $str строка которую нужно очистить
     * @retrun string Возвращает очищеную строку, но допускает некоторые символы, например ":"
     */
-    public function CleanName(string $str): string
+    public function CleanName(string|null $str): string
     {
+        if($str == null){
+            return 'Нет данных';
+        }
         $str = $this->getClean($str, 'Name');
         return $str;
     }

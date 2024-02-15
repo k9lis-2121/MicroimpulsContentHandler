@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TranscodingProcesses index{% endblock %}
+
+{% block body %}
+    <h1>TranscodingProcesses index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FilmName</th>
+                <th>HDD</th>
+                <th>StartTime</th>
+                <th>EndTime</th>
+                <th>Status</th>
+                <th>PID</th>
+                <th>Progress</th>
+                {# <th>CtreatedAt</th>
+                <th>UpdateAt</th> #}
+                {# <th>TranscodingSettings</th> #}
+                <th>UserSubmittedBy</th>
+                {# <th>ErrorMessage</th> #}
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transcoding_process in transcoding_processes %}
+            <tr>
+                <td>{{ transcoding_process.id }}</td>
+                <td>{{ transcoding_process.FilmName }}</td>
+                <td>{{ transcoding_process.Hdd }}</td>
+                <td>{{ transcoding_process.StartTime ? transcoding_process.StartTime|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ transcoding_process.EndTime ? transcoding_process.EndTime|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ transcoding_process.Status }}</td>
+                <td>{{ transcoding_process.PID }}</td>
+                <td>{{ transcoding_process.Progress }}</td>
+                {# <td>{{ transcoding_process.CtreatedAt ? transcoding_process.CtreatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ transcoding_process.UpdateAt ? transcoding_process.UpdateAt|date('Y-m-d H:i:s') : '' }}</td> #}
+                {# <td>{{ transcoding_process.TranscodingSettings }}</td> #}
+                <td>{{ transcoding_process.UserSubmittedBy }}</td>
+                {# <td>{{ transcoding_process.ErrorMessage }}</td> #}
+                <td>
+                    <a href="{{ path('app_transcoding_processes_show', {'id': transcoding_process.id}) }}">show</a>
+                    {# <a href="{{ path('app_transcoding_processes_edit', {'id': transcoding_process.id}) }}">edit</a> #}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="13">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {# <a href="{{ path('app_transcoding_processes_new') }}">Create new</a> #}
+{% endblock %}
