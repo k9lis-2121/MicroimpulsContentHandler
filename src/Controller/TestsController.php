@@ -15,19 +15,51 @@ use App\Repository\KplocalFilmsRepository;
 use App\Repository\KplocalActorsRepository;
 use App\Entity\KplocalFilms;
 use App\Entity\KplocalAсtors;
-
+use App\Service\Api\External\Kinopoisk\Pretraining\JsonToDtoService;
+use App\DTO\KpDTO;
+use App\Service\Api\External\Kinopoisk\Pretraining\PretrainingDataInDto;
+use App\Service\Api\External\Kinopoisk\Pretraining\Cleaners\CleanHelperService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Utils\GoHandlerService;
+use App\Service\Api\External\Kinopoisk\TestLoadDtoInDbService;
+
 
 class TestsController extends AbstractController
 {
     #[Route('/tests', name: 'app_tests')]
-    public function index(ToastStatusRepository $toastStatusRepository, UserToastStatusRepository $userToastRepository, KinopoiskProcessorService $kpProcessor, EntityManagerInterface $entityManager, GetContentInfoService $getContent, KplocalFilmsRepository $kplocalFilms, KplocalActorsRepository $kplocalAсtors): Response
+    public function index(
+        ToastStatusRepository $toastStatusRepository, 
+        UserToastStatusRepository $userToastRepository, 
+        KinopoiskProcessorService $kpProcessor, 
+        EntityManagerInterface $entityManager, 
+        GetContentInfoService $getContent, 
+        KplocalFilmsRepository $kplocalFilms, 
+        KplocalActorsRepository $kplocalAсtors,
+        JsonToDtoService $jsonToDtoService,
+        KpDTO $kpDTO,
+        PretrainingDataInDto $pretrainingDataInDto,
+        CleanHelperService $cleanHelperService,
+        GoHandlerService $goHandlerService,
+        TestLoadDtoInDbService $testLoadDtoInDbService,
+    ): Response
     {
-        $kpId = '401152';
+        // $kpId = '401152';
+        $kpId = '231096';
+
+        $response = $getContent->sendApiRequest($kpId);
+        $jsonToDtoService->dataSendToDto($response);
+        $pretrainingDataInDto->pretraining();
+        dump($kpDTO);
+        $testLoadDtoInDbService->saveFilmDtoInBase();
 
 
-        $res = $kplocalFilms->findOneBy(['kpId'=> $kpId]);
-        dump ($res);
+        // $res = $goHandlerService->getClearUnicodeString('Hümeyra');
+        // dump($res);
+
+        // $res = $kplocalFilms->findOneBy(['kpId'=> $kpId]);
+        // dump ($res);
+
+
 
         return $this->render('tests/index.html.twig', [
             'controller_name' => 'TestsController',

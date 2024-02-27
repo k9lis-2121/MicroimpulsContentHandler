@@ -4,7 +4,7 @@ namespace App\Service\DbAssist;
 
 use App\Interface\Service\DbAssist\SmartyDbAssistInterface;
 use App\Service\DbAssist\SmartyDbConnectorService;
-
+use App\DTO\SearchDTO;
 /**
  * Класс для установки параметров sql запроса и его отправки
  * 
@@ -110,9 +110,9 @@ class SmartyDbAssistService implements SmartyDbAssistInterface
         $this->dbQuery->smartyDbQuery($sql);
     }
 
-    public function getVideoIdByKinopoiskId($kinopoiskId)
+    public function getVideoIdByKinopoiskId(int $kpId)
     {
-        $sql = "SELECT id FROM smarty.tvmiddleware_video WHERE kinopoisk_id = '".$kinopoiskId."';";
+        $sql = "SELECT id FROM smarty.tvmiddleware_video WHERE kinopoisk_id = '".$kpId."';";
         return $this->dbQuery->smartyDbQuery($sql);
     }
 

@@ -1,74 +1,62 @@
 <?php
 
 namespace App\Service\Api\Inside\Search;
-use App\Service\Api\Inside\Search\SearchParamIsseterService;
+
+use App\DTO\SearchDTO;
 use App\Service\Api\Inside\Search\Searches\SearchByNameService;
 use App\Service\DbAssist\SmartyDbAssistService;
-
-
 use App\Repository\KplocalFilmsRepository;
 use App\Repository\TranscodingProcessesRepository;
 
-
 class SearchHandlerService
 {
-    
-    private $searchParamIsseter;
     private $searchByName;
+    private $smartyDbAssistService;
+    private $kpLocalFilmsRepository;
+    private $transcodingProcessesRepository;
 
     public function __construct(
-        SearchParamIsseterService $searchParamIsseter, 
         SearchByNameService $searchByNameService,
         SmartyDbAssistService $smartyDbAssistService,
         KplocalFilmsRepository $kpLocalFilmsRepository,
         TranscodingProcessesRepository $transcodingProcessesRepository
-        ){
-        $this->searchParamIsseter = $searchParamIsseter;
+    ) {
         $this->searchByName = $searchByNameService;
         $this->smartyDbAssistService = $smartyDbAssistService;
-        $this->kpLocalFilmsRepository=$kpLocalFilmsRepository;
+        $this->kpLocalFilmsRepository = $kpLocalFilmsRepository;
         $this->transcodingProcessesRepository = $transcodingProcessesRepository;
     }
 
-    public function issetParam(array $param){
-        return $this->searchParamIsseter->getIssetParam($param);
+    public function issetParam(SearchDTO $dto): bool
+    {
+        return !empty($dto->name) || !empty($dto->kpId) || !empty($dto->transcodeStatus);
     }
 
-    public function findByName(string $name){
-        $resultSearch = $this->searchByName->searchByName($name);
-        foreach($resultSearch as $key => $value){
-            $resultSearch[$key]['smartyId'] = $this->smartyDbAssistService->getVideoIdByKinopoiskId($value['kpId']);
+    public function performSearch(SearchDTO $dto)
+    {
+        $result = [];
+
+        if ($dto->transcodeStatus) {
+            return $this->transcodingProcessesRepository->findByTranscodingStatus($dto->transcodeStatus);
         }
-        return $resultSearch;
-    }
 
-    public function findSemanticByName(string $name){
-        $resultSearch = $this->searchByName->searchByNameSemantic($name);
-        foreach($resultSearch as $key => $value){
-            $resultSearch[$key]['smartyId'] = $this->smartyDbAssistService->getVideoIdByKinopoiskId($value['kpId']);
+        if (!empty($dto->name)) {
+            $result = $dto->semantic ?
+                $this->searchByName->searchByNameSemantic($dto) :
+                $this->searchByName->searchByName($dto);
         }
-        dump('dump result search');
-        dump($resultSearch);
-        return $resultSearch;
 
-    }
-
-    public function findByKpId(string $kpId){
-        $kpResult[0] = $this->kpLocalFilmsRepository->findOneByAsArray(['kpId' => $kpId]);
-        $result[0] = $this->smartyDbAssistService->getVideoIdByKinopoiskId($kpId);
-        foreach($result as $key => $value){
-            $result[$key]['smartyId'] = $this->smartyDbAssistService->getVideoIdByKinopoiskId($kpId);
+        if (!empty($dto->kpId)) {
+            $kpResult = $this->kpLocalFilmsRepository->findFilmByDTO($dto);
+            if ($kpResult) {
+                $smartyId = $this->smartyDbAssistService->getVideoIdByKinopoiskId((int)$dto->kpId);
+                $kpResult['smartyId'] = $smartyId;
+                $dto->smartyId = $smartyId; // Обновляем DTO
+                $result[] = $kpResult;
+            }
         }
-        $final = array_merge($kpResult[0], $result[0]);
-        return $final;
-    }
 
-    public function getTranscodeStatus($kpId){
-        return $this->transcodingProcessesRepository->findOneByKpIdAsArray($kpId);
-    }
 
-    public function searchTranscodeStatus($status){
-        return $this->transcodingProcessesRepository->findByTranscodingStatus($status);
+        return $result;
     }
-
 }

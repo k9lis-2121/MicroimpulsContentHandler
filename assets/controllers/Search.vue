@@ -43,7 +43,7 @@
                         <label for="searchTranscodingStatus">Статус транскодирования</label>
                         <select class="form-control" id="searchTranscodingStatus" v-model="searchTranscodingStatus" @change="search">
                             <option value="">Выбирете статус</option>
-                            <option value="in-progress">В процессе</option>
+                            <option value="Запущен">Запущен</option>
                             <option value="Завершено">Завершено</option>
                             <option value="Ошибка">Ошибка</option>
                         </select>

@@ -8,6 +8,7 @@ parameters:
     kp_base_url: '%env(KP_BASE_URL)%'
     kp_version_api: '%env(KP_VERSION_API)%'
     brochures_directory: '%kernel.project_dir%/public/img'
+    GO_BASE_DIR: '%kernel.project_dir%/Go'
     SMARTY_IMAGE_EPISODE_SCREENS_DIR: '%env(SMARTY_IMAGE_EPISODE_SCREENS_DIR)%'
     HDD_ARRAY: '%env(HDD_ARRAY)%'
     TRANSCODE_ENDPOINT: '%env(TRANSCODE_ENDPOINT)%'

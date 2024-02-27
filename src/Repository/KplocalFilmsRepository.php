@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\KplocalFilms;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use App\DTO\SearchDTO;
 /**
  * @extends ServiceEntityRepository<KplocalFilms>
  *
@@ -64,6 +64,47 @@ class KplocalFilmsRepository extends ServiceEntityRepository
 
     return $result;
 }
+
+public function findFilmByDTO(SearchDTO $dto): ?array
+{
+    $qb = $this->createQueryBuilder('e')
+        ->select('e.id', 'e.name', 'e.isSeason', 'e.nameOrig', 'e.kpId')
+        ->where('e.kpId = :kpId')
+        ->setParameter('kpId', $dto->kpId)
+        ->setMaxResults(1);
+
+    $query = $qb->getQuery();
+    return $query->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+}
+
+//  /**
+//      * Новый метод, использующий SearchDTO для поиска фильмов.
+//      *
+//      * @param SearchDTO $dto
+//      * @return array
+//      */
+//     public function findFilmsByDTO(SearchDTO $dto): array
+//     {
+//         $em = $this->getEntityManager();
+//         $qb = $em->createQueryBuilder();
+//         $qb->select('e.id', 'e.name', 'e.isSeason', 'e.nameOrig', 'e.kpId')
+//             ->from(KplocalFilms::class, 'e');
+
+//         // Пример использования условий из DTO
+//         if (!empty($dto->name)) {
+//             $qb->andWhere($qb->expr()->like('e.name', ':name'))
+//                ->setParameter('name', '%' . $dto->name . '%');
+//         }
+
+//         if (!empty($dto->kpId)) {
+//             $qb->andWhere('e.kpId = :kpId')
+//                ->setParameter('kpId', $dto->kpId);
+//         }
+
+//         // Добавьте другие условия поиска в зависимости от свойств DTO
+
+//         return $qb->getQuery()->getResult();
+//     }
 //    /**
 //     * @return KplocalFilms[] Returns an array of KplocalFilms objects
 //     */

@@ -2,12 +2,12 @@
 
 namespace App\Service\Api\Inside\Search\Searches;
 
+use App\DTO\SearchDTO; // Импортируем DTO
 use App\Repository\KplocalFilmsRepository;
 use App\Service\Utils\SemanticSearchService;
 
 class SearchByNameService
 {
-
     private $kpLocalFilmsRepository;
     private $semanticSearchService;
 
@@ -17,8 +17,9 @@ class SearchByNameService
         $this->semanticSearchService = $semanticSearchService;
     }
 
-    public function searchByNameSemantic($searchTerm)
+    public function searchByNameSemantic(SearchDTO $dto)
     {
+        $searchTerm = $dto->name; // Используем имя из DTO
         $results = $this->kpLocalFilmsRepository->finAllFilmsBySearch();
         $matchingResults = [];
         $searchTerms = preg_split('/\s+/', trim($searchTerm)); // Разбиваем исходный поисковый запрос на слова
@@ -26,7 +27,6 @@ class SearchByNameService
         foreach ($results as $result) {
             $jaccardIndexes = [];
 
-            // Для каждого слова в поисковом запросе:
             foreach ($searchTerms as $term) {
                 $namesToCompare = array_merge(
                     explode(' ', $result['name']), // Делим name на слова
@@ -41,14 +41,14 @@ class SearchByNameService
             
             $maxJaccardIndex = max($jaccardIndexes);
             
-            if ($maxJaccardIndex > 0.2) { // Можно настраивать порог
+            if ($maxJaccardIndex > 0.2) { // Порог совпадения
                 $matchingResults[] = [
                     'id' => $result['id'],
                     'kpId' => $result['kpId'],
                     'name' => $result['name'],
                     'nameOrig' => $result['nameOrig'],
                     'isSeason' => $result['isSeason'],
-                    'averageJaccardIndex' => $maxJaccardIndex // Здесь используем макс. индекс
+                    'averageJaccardIndex' => $maxJaccardIndex
                 ];
             }
         }
@@ -74,8 +74,9 @@ class SearchByNameService
         return $matchingResults;
     }
 
-    public function searchByName($name)
+    public function searchByName(SearchDTO $dto)
     {
+        $name = $dto->name; // Используем имя из DTO
         return $this->kpLocalFilmsRepository->findFilmsBySearchTerm($name);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\KplocalActorsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: KplocalActorsRepository::class)]
@@ -26,6 +27,18 @@ class KplocalActors
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profession = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $enProffession = null;
+
+    #[ORM\Column]
+    private ?int $kpActorId = null;
 
     public function getId(): ?int
     {
@@ -76,6 +89,54 @@ class KplocalActors
     public function setPhoto(?string $photo): static
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getProfession(): ?string
+    {
+        return $this->profession;
+    }
+
+    public function setProfession(?string $profession): static
+    {
+        $this->profession = $profession;
+
+        return $this;
+    }
+
+    public function getEnProffession(): ?string
+    {
+        return $this->enProffession;
+    }
+
+    public function setEnProffession(?string $enProffession): static
+    {
+        $this->enProffession = $enProffession;
+
+        return $this;
+    }
+
+    public function getKpActorId(): ?int
+    {
+        return $this->kpActorId;
+    }
+
+    public function setKpActorId(int $kpActorId): static
+    {
+        $this->kpActorId = $kpActorId;
 
         return $this;
     }

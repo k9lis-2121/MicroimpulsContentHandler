@@ -144,10 +144,13 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
             костыль
         */
         // if($data->getAgeRating() == null){
-        //     $data['ageRating'] = 0;
+        //     $test = '0';
+        // }else{
+        //     $test = (string)$data->getAgeRating();
         // }
 
-        $result = $this->smartyApi->createVideo($data->getName(), $data->getAgeRating(), $params);
+        
+        $result = $this->smartyApi->createVideo($data->getName(), '0', $params);
         foreach($data->getGenres() as $ganre){   
             $name = $ganre['name'];
             $response[] = $this->smartyDb->searchGenre($name);

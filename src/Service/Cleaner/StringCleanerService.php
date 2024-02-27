@@ -3,6 +3,7 @@
 namespace App\Service\Cleaner;
 
 use App\Interface\Service\Cleaner\StringCleanerInterface;
+use App\Service\Utils\GoHandlerService;
 
 /**
 * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
@@ -14,10 +15,22 @@ use App\Interface\Service\Cleaner\StringCleanerInterface;
 class StringCleanerService implements StringCleanerInterface
 {
 
+    private $goHandler;
+
+    public function __construct(GoHandlerService $goHandlerService)
+    {
+        $this->goHandler = $goHandlerService;
+    }
+
     private function stringConvert($str): string
     {
         $str = mb_convert_encoding($str, 'UTF-8', 'auto');
         return $str;
+    }
+
+    private function replaceBreveLetters($inputString) {
+        $result = $this->goHandler->getClearUnicodeString($inputString);     
+        return $result;
     }
 
     /**
@@ -28,11 +41,11 @@ class StringCleanerService implements StringCleanerInterface
     private function stringReplacer($str, $type): string
     {
         if($type == 'Full'){
-            $str = preg_replace('/[^a-zA-Zа-яА-Я0-9_\. ]/u', '', $str);
+            $str = preg_replace('/[^a-zA-Zа-яА-ЯЁё0-9_\. ]/u', '', $this->replaceBreveLetters($str));
         }elseif($type == 'Name'){
-            $str = preg_replace('/[^a-zA-Zа-яА-Я0-9_\.: ]/u', '', $str);
+            $str = preg_replace('/[^a-zA-Zа-яА-ЯёЁ0-9_\.: ]/u', '', $this->replaceBreveLetters($str));
         }elseif($type == 'Description'){
-            $str = preg_replace('/[^a-zA-Zа-яА-Я0-9_\.;\n\?\-, ]/u', '', $str);
+            $str = preg_replace('/[^a-zA-Zа-яА-ЯЁё0-9_\.;\n\?\-, ]/u', '', $this->replaceBreveLetters($str));
         }
         return $str;
     }
