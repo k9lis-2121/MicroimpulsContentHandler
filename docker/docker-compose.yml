@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+
+  php-fpm:
+    container_name: php-fpm
+    build:
+      context: ./../
+      dockerfile: ./docker/php-fpm/Dockerfile
+      args:
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - INSTALL_XDEBUG=${INSTALL_XDEBUG}
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+    volumes:
+      - /var/www/vendor/
+      - ./../:/var/www/
+      - /HDD/:/HDD/
+    ports:
+      - 80:8080
+      - 888:888
+      - 9001:9001
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+
+volumes:
+  db_data:
