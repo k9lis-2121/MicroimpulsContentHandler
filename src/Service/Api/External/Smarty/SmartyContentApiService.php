@@ -11,8 +11,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * @author Валерий Ожерельев - перевод на php
  * @api внешний для смарти
  * @version 2.0.0
- * @source https://microimpuls.github.io/smarty-content-api-docs/ сайт с описанием методов
- * @filesource /www/SCCP/src/Service/PythonAPI/SmartyApiLib.py
  */
 class SmartyContentApiService implements SmartyContentApiInterface
 {
@@ -28,27 +26,18 @@ class SmartyContentApiService implements SmartyContentApiInterface
     {
         $this->baseUrl = $baseUrl;
         $this->clientId = $clientId;
-        $this->apiKey = $apiKey; //'AGbpbd6l42Jb1qlDdwF7kSwEME0AvrzS';
+        $this->apiKey = $apiKey; 
     }
 
     private function getSignature(array $requestData): string
     {
-        $signSource = '';
-        ksort($requestData);
-        foreach ($requestData as $key => $value) {
-            $signSource .= $key . ':' . $value . ';';
-        }
-        $signSource .= $this->apiKey;
-        $signSourceBase64 = base64_encode($signSource);
-        $signature = md5($signSourceBase64);
-        return $signature;
+        //Секретная часть кода
     }
 
     private function getFullUrl(string $path): string
     {
-        // $parsedBaseUrl = parse_url($this->baseUrl);
-        $parsedBaseUrl['path'] = $path;
-        return $this->baseUrl .$path;
+        
+        //Секретная часть кода
     }
 
     private function apiRequest(string $path, array $data = []): array
@@ -97,7 +86,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
     *        'imdb_rating', 'average_customers_rating', 'duration', 'parent_control',
     *        'is_announcement'
     *   ]
-    *   @link https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideoCreate
     * @return array Возвращает id созданного фильма/сериала, код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function createVideo(string $name, string $rating, array $kwargs = []): array
@@ -137,7 +125,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
     *        'year', 'poster_url', 'screenshot_url', 'actors_set', 'genres_kinopoisk',
     *        'kinopoisk_rating', 'imdb_rating', 'rating', 'duration'
     *    ]
-    *   @link https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideoModify
     * @return array Возвращает код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function modifyVideo(int $id, array $kwargs = []):array {
@@ -176,7 +163,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
     *        'name_lang5', 'filename', 'duration', 'is_trailer', 'ext_id', 'sort_after_vfid',
     *        'quality'
     *   ]
-    * @link https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideofileCreate
     * @return array Возвращает id созданного ассета, код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function createVideoFile(string $name, int $vid, array $kwargs = []):array {
@@ -203,7 +189,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
     *        'name_lang5', 'filename', 'duration', 'is_trailer', 'ext_id', 'sort_after_vfid',
     *        'quality'
     *   ]
-    * @link https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideofileModify
     * @return array Возвращает id созданного фильма/сериала, код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function modifyVideoFile(int $id, array $kwargs = []):array {
@@ -227,7 +212,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
      *       'name_lang1', 'name_lang2', 'name_lang3',
      *       'name_lang4', 'name_lang5', 'sort_after_sid'
      *  ]
-     * @link https://microimpuls.github.io/smarty-content-api-docs/#api-Season-SeasonCreate
      * @return array Возвращает id созданного сезона, код ошибки, и текст ошибки (текст пустой если код = 0)
      */
     public function createSeason(string $name, int $vid, array $kwargs = []):array {
@@ -262,7 +246,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
      *       'name_lang1', 'name_lang2', 'name_lang3',
      *       'name_lang4', 'name_lang5', 'sort_after_sid'
      *  ]
-     * @link https://microimpuls.github.io/smarty-content-api-docs/#api-Season-SeasonModify
      * @return array Возвращает код ошибки, и текст ошибки (текст пустой если код = 0)
      */
     public function modifySeason(int $season_id, array $kwargs = []):array {
@@ -290,7 +273,6 @@ class SmartyContentApiService implements SmartyContentApiInterface
      *       'description_lang4', 'description_lang5', 'duration',
      *       'sort_after_eid'
      *  ]
-     * @link https://microimpuls.github.io/smarty-content-api-docs/#api-Episode-EpisodeCreate
      * @return array Возвращает id созданной серии, код ошибки, и текст ошибки (текст пустой если код = 0)
      */
     public function createEpisode(int $vid, string $name, int $season_id, array $kwargs = []):array {
@@ -330,9 +312,7 @@ class SmartyContentApiService implements SmartyContentApiInterface
      *       'description_lang4', 'description_lang5', 'duration',
      *       'sort_after_eid'
      *  ]
-     * @link https://microimpuls.github.io/smarty-content-api-docs/#api-Episode-EpisodeModify
      * @return array Возвращает код ошибки, и текст ошибки (текст пустой если код = 0)
-     * @
      */
     public function modifyEpisode(int $episode_id, array $kwargs = []):array {
         $params = ['episode_id' => $episode_id];

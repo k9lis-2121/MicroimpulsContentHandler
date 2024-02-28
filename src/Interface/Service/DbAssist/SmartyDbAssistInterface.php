@@ -6,7 +6,7 @@ namespace App\Interface\Service\DbAssist;
  * Класс для выполнения прямыз запросов к базе данных смарти, 
  * для автоматизированной загрузки данные для которых не существует api методов в смарти
  * 
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method void setVid()
 * @method void setKinopoiskId()
 * @method void setGenres()

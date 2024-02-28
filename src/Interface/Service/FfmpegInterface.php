@@ -5,7 +5,7 @@ namespace App\Interfaces\Service;
 /**
  * Сервис для работы с ffmpeg
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method void extractThumbnail()
  * @method int getVideoDuration()
  * @version 1.0.0

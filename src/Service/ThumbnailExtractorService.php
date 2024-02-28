@@ -14,7 +14,7 @@ use App\Interfaces\Service\ThumbnailExtractorInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method void handleThumbnailExtraction()
  * @version 1.0.0
  */
@@ -75,7 +75,6 @@ class ThumbnailExtractorService
      *
      * @param ThumbnailExtractionMessage $message
      * @return void
-     * @ticket Здесь можно интегрировать запись статуса в mysql
      */
     public function handleThumbnailExtraction(ThumbnailExtractionMessage $message): void
     {

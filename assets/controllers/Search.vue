@@ -109,7 +109,7 @@
           <td>{{ item.UpdateAt }}</td>
           <td>{{ item.error_message }}</td>
           <td>
-                <div v-for="smartyId in item.smartyId" :key="smartyId.id"><a :href="'http://mi-smarty.mycentra.ru/tvmiddleware/video/edit?checked%5B%5D=' + smartyId.id" target="_blank">{{ smartyId.id }}</a><br></div>
+                <div v-for="smartyId in item.smartyId" :key="smartyId.id"><a :href="'http://smarty.ru/tvmiddleware/video/edit?checked%5B%5D=' + smartyId.id" target="_blank">{{ smartyId.id }}</a><br></div>
             
         </td>
     </tr>
@@ -121,21 +121,18 @@
           <tr>
             <th>Result 1</th>
             <th>Result 2</th>
-            <!-- Add more table headings as needed -->
           </tr>
         </thead>
         <tbody>
           <tr v-for="result in searchResults" :key="result.id" @click="showDetails(result)">
             <td>{{ result.field1 }}</td>
             <td>{{ result.field2 }}</td>
-            <!-- Add more table data fields as needed -->
           </tr>
         </tbody>
       </table>
     
       <div v-if="selectedResult">
         <h2>Selected Result Details</h2>
-        <!-- Display detailed information about the selected result -->
       </div>
     </div>
 </div>
@@ -181,15 +178,8 @@
             .catch(error => {
                 console.error(error);
             });
-        console.log(
-            searchData
-            );
-        // Perform search logic based on the input fields and populate searchResults
         this.loading = true;
-        // Simulated loading delay
         setTimeout(() => {
-          // Perform backend search using this.searchName, this.searchInitialDirectory, etc.
-          // Update this.searchResults with the search results
           this.loading = false;
         }, 1000);
       },

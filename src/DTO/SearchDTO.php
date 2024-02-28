@@ -14,6 +14,6 @@ class SearchDTO
         $this->name = $data['searchName'] ?? null;
         $this->kpId = $data['searchKpId'] ?? null;
         $this->transcodeStatus = $data['searchTranscodingStatus'] ?? null;
-        $this->smartyId = $data['smartyId'] ?? null; // Инициализация нового свойства
+        $this->smartyId = $data['smartyId'] ?? null; 
     }
 }

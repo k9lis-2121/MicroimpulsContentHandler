@@ -36,7 +36,6 @@ class ThumbnailQueueService
     {
         $this->messageBus->dispatch(new ThumbnailExtractionMessage($episode, $contentDir));
 
-         // Сохраняем задачу в таблице "tasks"
          $this->db->insert('tasks_screen', [
             'episode' => $episode,
             'content_dir' => $contentDir,

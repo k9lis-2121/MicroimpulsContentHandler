@@ -5,7 +5,7 @@ namespace App\Message;
 /**
  * Message SmartyContentCreator
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method array getKinopoiskData()
  * @method integer getSelectedDisk()
  * @version 1.0.0

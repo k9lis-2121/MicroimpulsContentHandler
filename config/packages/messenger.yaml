@@ -15,11 +15,11 @@ framework:
                     multiplier: 2
             failed: 'doctrine://default?queue_name=failed'
             thumb_queue:
-                dsn: "redis://redis:6379/3" # указываем базу данных Redis 3
+                dsn: "redis://redis:6379/3" 
             dir_queue:
-                dsn: "redis://redis:6379/4" # указываем базу данных Redis 3
+                dsn: "redis://redis:6379/4" 
             smarty_queue:
-                dsn: "redis://redis:6379/5" # указываем базу данных Redis 3
+                dsn: "redis://redis:6379/5" 
             # sync: 'sync://'
 
         routing:

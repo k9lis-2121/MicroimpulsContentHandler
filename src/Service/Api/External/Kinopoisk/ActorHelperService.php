@@ -28,7 +28,6 @@ class ActorHelperService implements ActorHelperInterface
             
             $this->imgHandler->imageConvert($img, 'default', 'jpg', 'png');
             dump('ACTOR IMAGE');
-            // $origNameForFile = str_replace(' ', '_', $origName);
             $fname = uniqid('p_');
             $filename = $this->imgHandler->loadActorImageToSmarty($fname);
             dump($filename);

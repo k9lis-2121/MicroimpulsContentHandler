@@ -7,7 +7,7 @@ use App\Interface\Message\MakeFullDirMessageInterface;
 /**
  * Message MakeFullDir
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев
  * @method array getData()
  * @version 1.0.0
  */

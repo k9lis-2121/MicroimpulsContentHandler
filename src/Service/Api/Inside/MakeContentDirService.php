@@ -14,7 +14,7 @@ use Doctrine\DBAL\Connection;
 
 /**
  * Класс управляет директориями контента
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method makeFullDir()
  * @version 1.0.0
  */
@@ -65,7 +65,6 @@ class MakeContentDirService
     public function makeFullDir(MakeFullDirMessage $message): void
     {
         $data = $message->getMessage();
-        $this->logger->warning('MAKE CONTENT DIR SEVICE LOGGER');
         $task = $this->taskDirManager->createTask($data['title']);
         $this->bus->dispatch(new MakeFullDirMessage($data));
         $this->taskDirManager->updateTaskStatus($task, 'queued');

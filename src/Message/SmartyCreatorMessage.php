@@ -6,7 +6,7 @@ use App\Interface\Message\SmartyCreatorMessageInterface;
 /**
  * Message SmartyCreator
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method array getData()
  * @method array getKinopoiskData()
  * @method array getMakerDirResult()

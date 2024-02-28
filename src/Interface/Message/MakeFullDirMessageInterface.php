@@ -5,7 +5,7 @@ namespace App\Interface\Message;
 /**
  * Message interface
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method array getData()
  * @version 1.0.0
  */

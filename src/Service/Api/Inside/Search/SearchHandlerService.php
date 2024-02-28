@@ -51,7 +51,7 @@ class SearchHandlerService
             if ($kpResult) {
                 $smartyId = $this->smartyDbAssistService->getVideoIdByKinopoiskId((int)$dto->kpId);
                 $kpResult['smartyId'] = $smartyId;
-                $dto->smartyId = $smartyId; // Обновляем DTO
+                $dto->smartyId = $smartyId; 
                 $result[] = $kpResult;
             }
         }

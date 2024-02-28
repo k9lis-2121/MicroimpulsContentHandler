@@ -5,7 +5,7 @@ namespace App\Interface\Service;
 /**
  * Класс для обработки массива полученного из info.txt
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method void addContentData()
  * @version 1.0.0
  */

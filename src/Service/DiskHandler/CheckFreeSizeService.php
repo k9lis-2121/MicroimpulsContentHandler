@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 /**
  * Сервис для работы с диском
  *  
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method array checkFreeSize()
  * @method integer getFreeDisk()
  * @version 1.0.0

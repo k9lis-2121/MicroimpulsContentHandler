@@ -3,7 +3,7 @@
 namespace App\Interface\Service\Api\External\Kinopoisk;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @api Кинопоиск
 * @method string getArrToString()
 * @method mixed notNull()

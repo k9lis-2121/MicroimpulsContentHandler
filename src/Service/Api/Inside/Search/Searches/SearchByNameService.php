@@ -19,18 +19,18 @@ class SearchByNameService
 
     public function searchByNameSemantic(SearchDTO $dto)
     {
-        $searchTerm = $dto->name; // Используем имя из DTO
+        $searchTerm = $dto->name; 
         $results = $this->kpLocalFilmsRepository->finAllFilmsBySearch();
         $matchingResults = [];
-        $searchTerms = preg_split('/\s+/', trim($searchTerm)); // Разбиваем исходный поисковый запрос на слова
+        $searchTerms = preg_split('/\s+/', trim($searchTerm)); 
     
         foreach ($results as $result) {
             $jaccardIndexes = [];
 
             foreach ($searchTerms as $term) {
                 $namesToCompare = array_merge(
-                    explode(' ', $result['name']), // Делим name на слова
-                    explode(' ', $result['nameOrig']) // Делим nameOrig на слова
+                    explode(' ', $result['name']), 
+                    explode(' ', $result['nameOrig']) 
                 );
 
                 foreach ($namesToCompare as $word) {
@@ -41,7 +41,7 @@ class SearchByNameService
             
             $maxJaccardIndex = max($jaccardIndexes);
             
-            if ($maxJaccardIndex > 0.2) { // Порог совпадения
+            if ($maxJaccardIndex > 0.2) { 
                 $matchingResults[] = [
                     'id' => $result['id'],
                     'kpId' => $result['kpId'],
@@ -67,7 +67,6 @@ class SearchByNameService
                 return $b['averageJaccardIndex'] <=> $a['averageJaccardIndex'];
             });
 
-            // Возвращаем только лучшее совпадение
             $matchingResults = [$matchingResults[0]];
         }
         
@@ -76,7 +75,7 @@ class SearchByNameService
 
     public function searchByName(SearchDTO $dto)
     {
-        $name = $dto->name; // Используем имя из DTO
+        $name = $dto->name; 
         return $this->kpLocalFilmsRepository->findFilmsBySearchTerm($name);
     }
 }

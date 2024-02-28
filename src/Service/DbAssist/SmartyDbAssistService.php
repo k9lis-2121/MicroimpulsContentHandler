@@ -8,7 +8,7 @@ use App\DTO\SearchDTO;
 /**
  * Класс для установки параметров sql запроса и его отправки
  * 
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method void smartyDbConnect()
 * @version 1.0.0
 */
@@ -116,21 +116,6 @@ class SmartyDbAssistService implements SmartyDbAssistInterface
         return $this->dbQuery->smartyDbQuery($sql);
     }
 
-    // public function setTariffForVideo(array $id)
-    // {
-    //     $sql =  "INSERT INTO smarty.tvmiddleware_video_tariffs (video_id, tariff_id) VALUES(".$id['video'].", ".$id['tariffid'].");";
-    //     $this->inserter($sql);
-    // }
-    // public function setVideoGener($videoId, $generId)
-    // {
-    //     $sql = "INSERT INTO smarty.tvmiddleware_video_genres (video_id, genre_id) VALUES(".$videoId.", ".$generId.");";
-    //     $this->inserter($sql);
-    // }
 
-    // public function setNewGener($gener)
-    // {
-    //    $sql =  "INSERT INTO smarty.tvmiddleware_genre (name, sort, client_id, is_category, name_lang1, name_lang2, name_lang3, name_lang4, name_lang5, enabled, epg_genre_id, hide_in_videolist, rating) VALUES(".$gener.", 6, 1, 0, '', '', '', '', '', 1, NULL, 0, 0);";
-    //     $this->inserter($sql);
-    // }
 
 }

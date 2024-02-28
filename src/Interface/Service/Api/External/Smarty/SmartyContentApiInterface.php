@@ -4,7 +4,7 @@ namespace App\Interface\Service\Api\External\Smarty;
 
 /**
  * @author microimpulse - оригинал на python
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru> - перевод на php
+ * @author Валерий Ожерельев - перевод на php
  * @api внешний для смарти
  * @version 2.0.0
  * @method array createVideo()
@@ -18,7 +18,6 @@ namespace App\Interface\Service\Api\External\Smarty;
  * @method array createEpisode()
  * @method array deleteEpisode()
  * @method array modifyEpisode()
- * @source https://microimpuls.github.io/smarty-content-api-docs/ сайт с описанием методов
  * @filesource /www/SCCP/src/Service/PythonAPI/SmartyApiLib.py
  */
 interface SmartyContentApiInterface
@@ -29,14 +28,14 @@ interface SmartyContentApiInterface
     /**
     * @param string $name название фильма/сериала
     * @param string $rating Возрастной рейтинг
-    * @param array $kwargs Дополнительные параметры https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideoCreate
+    * @param array $kwargs Дополнительные параметры 
     * @return array Возвращает id созданного фильма/сериала, код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function createVideo(string $name, string $rating, array $kwargs): array;
 
     /**
     * @param integer $id ID фильма/сериала в смарти
-    * @param array $kwargs Дополнительные параметры https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideoCreate
+    * @param array $kwargs Дополнительные параметры
     * @return array Возвращает код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function modifyVideo(int $id, array $kwargs): array;
@@ -52,14 +51,14 @@ interface SmartyContentApiInterface
     /**
     * @param string $name Имя ассета в смарти
     * @param integer $vid ID видеофайла в смарти
-    * @param array $kwargs Дополнительные параметры https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideoCreate
+    * @param array $kwargs Дополнительные параметры
     * @return array Возвращает id созданного ассета, код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function createVideoFile(string $name, int $vid, array $kwargs): array;
 
     /**
     * @param integer $id ID видеофайла в смарти
-    * @param array $kwargs Дополнительные параметры https://microimpuls.github.io/smarty-content-api-docs/#api-Video-VideoCreate
+    * @param array $kwargs Дополнительные параметры 
     * @return array Возвращает id созданного фильма/сериала, код ошибки, и текст ошибки (текст пустой если код = 0)
     */
     public function modifyVideoFile(int $id, array $kwargs): array;

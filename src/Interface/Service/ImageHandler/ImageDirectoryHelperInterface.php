@@ -5,7 +5,7 @@ namespace App\Interface\Service\ImageHandler;
 use Symfony\Bundle\MakerBundle\Str;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string createDirectory()
 * @method string moveImagesToDirectory()
 * @version 1.0.0

@@ -23,19 +23,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Service\Api\External\Kinopoisk\SaveLocalFilmService;
 use App\Service\DiskHandler\CheckFreeSizeService;
 use App\Service\Utils\GetGlobalOptionService;
-/*
- 
-План:
-Реализовать создание директорий для фильмов
-Реализовать создание директорий для сериалов
-Реализовать создание директорий для трейлеров
 
-Релизовать добавление в локальную базу информации о директориях
-
-Реализовать добавления в смарти
-Есть какая-то проблема с загрузкой актеров, а скорее всего проблема именно в конвертере изображений
-
-*/
 
 /**
  * Контроллер реализующий авторматическую загрузку фильмов в смарти и создающий структуру директорий под него
@@ -50,7 +38,6 @@ class ApiMakerDirController extends AbstractController
     private $requestProcessor;
     private $saverKpData;
     /**
-     * В конструктор загружаются вспомогательные сервисы
      *
      * @param GetContentInfoService $getContentInfo
      */
@@ -72,7 +59,6 @@ class ApiMakerDirController extends AbstractController
     }
 
     /**
-     * Огромный контроллер монстр, который я не знаю как оптимизировать
      *
      * @param Request $request
      * @param VodDirTemplateRepository $vodDirTemplateRepository
@@ -150,24 +136,7 @@ class ApiMakerDirController extends AbstractController
     }
 
 
-    // #[Route('/api/maker/smarty/asset', name: 'app_api_maker_smarty_asset', methods: ['POST'])]
-    // public function makeSmartyAsset(Request $request): Response
-    // {
-    //     $requestData = $this->requestProcessor->processRequestData($request);
-    //     $data = $requestData['data'];
 
-    //     $kinopoiskData = $this->saverKpData->loadLocal($data['kinopoiskId']);
-    //     $this->bus->dispatch(new SmartyContentCreatorMessage($kinopoiskData, $data['selectedDisk']));
-
-    //     $response = [
-    //         'message' => true,
-    //         'messageTitle' => $data['kinopoiskId'],
-    //         'messageBody' => 'Задача поставлена в очередь',
-    //         'contentDirectory' => '',
-    //     ];
-
-    //     return $this->json($response);
-    // }
 
     #[Route('/api/maker/dir', name: 'app_api_maker_dir', methods: ['POST'])]
     public function index(Request $request, TasksDirRepository $taskDirRepository, EntityManagerInterface $entityManager, FileInfoLoaderService $fileInfoLoaderService, CheckFreeSizeService $checkFreeSizeService): Response
@@ -224,37 +193,14 @@ class ApiMakerDirController extends AbstractController
                         $result = $taskDir->getResults();
                         $kinopoiskData = $this->saverKpData->loadLocal($data['kinopoiskId']);
                         $this->bus->dispatch(new SmartyCreatorMessage($data, $kinopoiskData, $result, $data['selectedDisk']));
-                        break; // выход из цикла
+                        break; 
                     }
                 }
 
                 sleep(5);
-                // Можно также добавить логику для определения максимального количества попыток перед прекращением цикла
             }
         }
 
-
-
-
-        // if ($data['uploadToSmarty'] == 'yes') {
-        //     sleep(5);
-        //     for ($i = 0; $i < 100;) {
-        //         $taskDir = $taskDirRepository->findOneBy(['title' => $data['title']]);
-        //         if ($taskDir == null) {
-        //             $entityManager->refresh($taskDir);
-        //             $i++;
-        //         } else {
-        //             $dirStatus = $taskDir->getStatus();
-        //             if ($dirStatus == 'завершена') {
-        //                 $i = 100;
-        //                 $result = $taskDir->getResults();
-        //                 $kpresponse = $this->getContentInfo->sendApiRequest($data['kinopoiskId']);
-        //                 $kinopoiskData = json_decode($kpresponse->getContent(), true);
-        //                 $this->bus->dispatch(new SmartyCreatorMessage($data, $kinopoiskData, $result, $data['selectedDisk']));
-        //             }
-        //         }
-        //     }
-        // }
 
 
 

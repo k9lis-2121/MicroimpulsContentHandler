@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
     /**
      * Конвертация изображений через сервис convertio (лимит 25 изобрвжений в сутки)
-    * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+    * @author Валерий Ожерельев 
     * @api convertio
     * @method string convertioToJpg()
     * @version 1.0.0

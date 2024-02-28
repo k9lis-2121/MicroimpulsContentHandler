@@ -94,13 +94,11 @@
           </div>
         
         </div>
-          <!-- Новый чекбокс для транскодирования -->
           <div class="form-check mt-3">
           <input type="checkbox" class="form-check-input" id="transcode" v-model="formData.transcode">
           <label class="form-check-label" for="transcode">Транскодировать</label>
         </div>
 
-        <!-- Поле для ввода имени файла, появляется если transcode == true -->
         <div v-if="formData.transcode" class="form-group mt-3">
           <label for="fileName">Имя файла</label>
           <input type="text" class="form-control" id="fileName" v-model="formData.fileName">
@@ -109,13 +107,11 @@
 
 
 
-         <!-- Новый чекбокс для транскодирования -->
         <div class="form-check mt-3">
           <input type="checkbox" class="form-check-input" id="handhdd" v-model="formData.handhdd">
           <label class="form-check-label" for="handhdd">Указать диск в ручную</label>
         </div>
 
-        <!-- Поле для ввода имени файла, появляется если transcode == true -->
         <div v-if="formData.handhdd" class="form-group mt-3">
           <label for="selectedDisk">Номер диска</label>
           <input type="text" class="form-control" id="selectedDisk" v-model="formData.selectedDisk">
@@ -126,7 +122,6 @@
 
         <button type="submit" class="btn btn-primary">Отправить</button>
       </form>
-      <!-- Сообщение о загрузке -->
     
       
     </div>
@@ -148,7 +143,6 @@
 
   export default {
     mounted() {
-    // Вызовите функцию для обновления статуса каждые 10 секунд при монтировании компонента
     this.resetForm();
     this.updateStatusPeriodically();
   },
@@ -186,11 +180,11 @@
           sameEpisodes: {},
           uploadToSmarty: 'yes',
           createDirectory: 'yes',
-          transcode: false, // Добавлено для транскодирования
+          transcode: false, 
           
         handhdd: false,
         selectedDisk: 0,
-        fileName: '' // Имя файла при транскодировании
+        fileName: ''
         },
         dir: '',
         file: null,
@@ -261,7 +255,6 @@ selectedDisk: this.formData.selectedDisk
 
 const json = JSON.stringify(data);
 
-// const formData = new FormData();
 formData.append('data', json);
 formData.append('file', this.file);
 
@@ -276,28 +269,23 @@ axios.post('/api/maker/dir', formData, {
 )
 
       .then((response) => {
-        // Обработка успешного ответа
-        // console.log(response.data);
         
         this.isFormSubmitted = false;
         this.dir = response.data.contentDirectory;
         this.showToast(response);
-        this.resetForm(); // Сброс формы
+        this.resetForm(); 
       })
       .catch((error) => {
-        // Обработка ошибки
         console.error(error);
         this.showToast("Ошибка при отправке данных");
       });
   },
 
   resetForm() {
-      // Сброс formData к начальным значениям
       this.formData = this.initialFormData();
       this.file = null;
       this.seasonArray = [];
       this.isFormSubmitted = false;
-      // Обнуление асинхронного индикатора загрузки, если это необходимо
       setTimeout(() => this.loading = false, 0);
     },
 
@@ -314,7 +302,6 @@ axios.post('/api/maker/dir', formData, {
 showToast(response) {
   const message = response.data.message;
   if (message === true) {
-    // Отображаем toast с содержимым из ответа
     const messageTitle = response.data.messageTitle;
     const messageBody = response.data.messageBody;
 
@@ -330,7 +317,6 @@ showToast(response) {
     });
   }
 },
-    // Функция для обновления статуса каждые 10 секунд
     updateStatusPeriodically() {
       setInterval(() => {
         this.updateStatus();

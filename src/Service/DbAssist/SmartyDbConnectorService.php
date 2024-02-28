@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 /**
  * Класс для прямого подключения к базе смарти.
  * 
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method void smartyDbQuery()
 * @version 1.0.0
 */

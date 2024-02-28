@@ -6,7 +6,7 @@ use App\Interface\Service\Cleaner\StringCleanerInterface;
 use App\Service\Utils\GoHandlerService;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string CleanFull()
 * @method string CleanName()
 * @method string CleanDescription()

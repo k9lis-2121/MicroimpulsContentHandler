@@ -3,7 +3,7 @@
 namespace App\Interface\Service\ImageHandler;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string convertToJpg()
 * @version 1.0.0
 */

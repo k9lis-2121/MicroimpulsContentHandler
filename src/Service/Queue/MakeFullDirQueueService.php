@@ -36,7 +36,6 @@ class MakeFullDirQueueService
         dump($requestData);
         $this->messageBus->dispatch(new MakeFullDirMessage($requestData['data']));
 
-         // Сохраняем задачу в таблице "tasks"
          $this->db->insert('tasks_dir', [
             'title' => $requestData['data']['title'],
             'status' => 'в очереди',

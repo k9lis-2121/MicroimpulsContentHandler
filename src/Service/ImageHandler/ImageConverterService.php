@@ -6,7 +6,7 @@ use App\Interface\Service\ImageHandler\ImageConverterInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string convertToJpg()
 * @version 1.0.0
 */
@@ -32,11 +32,10 @@ class ImageConverterService implements ImageConverterInterface
     {
 
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-        $supportedExtensions = ['webp', 'png', 'gif']; // Добавьте поддерживаемые расширения сюда
+        $supportedExtensions = ['webp', 'png', 'gif']; 
 
         if (in_array($extension, $supportedExtensions)) {
 
-            // Создаем ресурс изображения в соответствии с расширением
             if ($extension === 'webp') {
                 $newImage = imagecreatefromwebp($filePath);
                 unlink($filePath);
@@ -48,30 +47,23 @@ class ImageConverterService implements ImageConverterInterface
                 unlink($filePath);
             }
 
-            // Получаем ресурс изображения .webp
             dump($filePath);
             $webpImage = imagecreatefromwebp($filePath);
             $filename = 'pb_poster';// uniqid('file_');
-            // Создаем пустой холст для нового изображения в формате .jpg
             $newImage = imagecreatetruecolor(imagesx($webpImage), imagesy($webpImage));
-            // Путь для сохранения преобразованного изображения в директории public
             $savePath = $this->publicPath . '/img/tmp/' . $filename . '.'.$extension;
             
-            // Копируем изображение и преобразуем его в формат .jpg с максимальным сжатием (качество 100)
             imagecopy($newImage, $webpImage, 0, 0, 0, 0, imagesx($webpImage), imagesy($webpImage));
             imagejpeg($newImage, $savePath, 100);
             
-            // Освобождаем память, освобождаем ресурсы
             imagedestroy($webpImage);
             imagedestroy($newImage);
 
 
-            // Полный URL для доступа к сохраненному изображению
             $imageUrl = $this->generateImageUrl($filename);
 
             return $imageUrl;
         } else {
-            // Файл не требует конвертации, возвращаем его исходный путь
             return $filePath;
         }
     }

@@ -7,7 +7,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @api базовый для отправки запросов
 * @method response sendApiRequest()
 * @version 1.0.0

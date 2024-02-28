@@ -3,7 +3,7 @@
 namespace App\Interface\Service\Cleaner;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string CleanFull()
 * @method string CleanName()
 * @method string CleanDescription()

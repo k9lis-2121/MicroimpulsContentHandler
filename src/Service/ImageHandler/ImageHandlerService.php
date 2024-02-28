@@ -12,7 +12,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Класс для управления конвертацией изображений локально или через api
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string imageConvert()
 * @version 1.0.0
 */
@@ -35,7 +35,6 @@ class ImageHandlerService implements ImageHandlerInterface
     private function processFileWithExiftool(string $filePath): string
     {
         $output = new ConsoleOutput();
-        // Получаем тип файла с помощью консольной команды exiftool
         $process = new Process(['exiftool', '-FileTypeExtension', '-s', '-s', $filePath]);
         $process->run();
     
@@ -55,16 +54,12 @@ class ImageHandlerService implements ImageHandlerInterface
             $output->writeln('Не удалось получить тип файла.');
             return '';
         }
-        // Генерируем новое имя файла на основе типа файла
         $newFileName = uniqid('file_') . '.' . $fileType;
     
-        // Полный путь до нового файла в новой директории
         $newFilePath = $newDirectoryName . '/' . $newFileName;
     
-        // Создаем копию файла
         copy($filePath, $newFilePath);
     
-        // Переименуем файл
         rename($newFilePath, $newDirectoryName . '/' . $newFileName);
     
         $output->writeln('Файл успешно обработан и переименован.');
@@ -78,13 +73,11 @@ class ImageHandlerService implements ImageHandlerInterface
     */
     private function douwnloadImage($url): string
     {
-        // Получаем содержимое файла
         $fileContents = file_get_contents($url);
 
-        // Генерируем уникальное имя файла
-        $uniqueFileName = 'pb_poster';//uniqid('pb_');
+        $uniqueFileName = 'pb_poster';
 
-        // Получаем расширение файла из заголовков ответа сервера
+
         $extension = '';
         $headers = get_headers($url);
         if ($headers && preg_match('/\bContent-Type: ([\w\/\.\-]+)/', implode("\n", $headers), $matches)) {
@@ -92,15 +85,12 @@ class ImageHandlerService implements ImageHandlerInterface
             $extension = pathinfo($contentType, PATHINFO_EXTENSION);
         }
 
-        // Добавляем расширение к имени файла, если оно доступно
         if (!empty($extension)) {
             $uniqueFileName .= '.' . $extension;
         }
 
-        // Полный путь до файла
         $filePath = $this->publicPath . '/public/img/tmp/' . $uniqueFileName;
 
-        // Сохраняем файл
         file_put_contents($filePath, $fileContents);
 
         $newFilePath = $this->processFileWithExiftool($filePath);
@@ -155,7 +145,7 @@ class ImageHandlerService implements ImageHandlerInterface
      */
     public function loadActorImageToSmarty(string $id): string
     {
-        $targetDirectory = '/mnt/adddata/panel_v3/public/img/mnt/smarty/tvmiddleware/actors';
+        $targetDirectory = '/public/img/mnt/smarty/tvmiddleware/actors';
         $this->imgDirHelper->moveImagesToDirectory($this->convertedFile, $targetDirectory, $id.'.png');
 
         $exp = explode('/', $this->convertedFile);

@@ -84,8 +84,6 @@ class ContentController extends AbstractController
         $torrents = $entityManager->getRepository(Torrents::class)->findBy(['content_id' => $content->getId()]);
 
         if ($request->isMethod('POST')) {
-            // Обработка и сохранение данных из формы
-            // ...
 
             $entityManager->flush();
 

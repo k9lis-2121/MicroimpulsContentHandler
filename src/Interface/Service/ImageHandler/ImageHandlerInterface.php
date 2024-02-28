@@ -4,7 +4,7 @@ namespace App\Interface\Service\ImageHandler;
 
 /**
  * Класс для управления конвертацией изображений локально или через api
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @method string imageConvert()
 * @version 1.0.0
 */

@@ -6,7 +6,7 @@ use App\Interface\Service\Api\External\Kinopoisk\KinopoiskUrlMakerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев
 * @api Кинопоиск
 * @method object makeUrl()
 * @version 1.0.0

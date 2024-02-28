@@ -29,9 +29,7 @@ class ApiStatusController extends AbstractController
         ];
         $result = false;
         
-        //получаем id пользователя
         $user = $this->getUser();
-        dump($user);
         if($user == null){
             $response = [
                 'message' => true,
@@ -41,13 +39,11 @@ class ApiStatusController extends AbstractController
             return $this->json($response);
         }
         $userId = $user->getId();
-        //Получаем все уведомления
         $toasts = $toastStatusRepository->getToast($userId);
 
         if ($toasts != null) {
             $result = true;
 
-            //Проходим каждое уведомление в цикле (ВНИМАНИЕ, НАДО ПОДУМАТЬ ЧЕ ДЕЛАТЬ СО СКРИНШОТАМИ)
             foreach ($toasts as $toast) {
                 $toastId = $toast->getId();
                 $toastTitle = $toast->getTitle();
@@ -55,15 +51,12 @@ class ApiStatusController extends AbstractController
                 $toastKpId = $toast->getKpId();
                 $toastComponent = $toast->getComponent();
 
-                //Ищем соответствие между пользователем и уведомлением
                 $userToastStatus = new UserToastStatus;
                 $toastStatus = new ToastStatus;
                 $userStatus = $userToastRepository->findOneBy(['toast_id' => $toastId, 'user_id' => $userId]);
 
-                //Если записи об уведомлении пользователя нет, то...
                 if ($userStatus == null) {
 
-                    //Проверяем что это не скриншотер и создаем запись в таблицу пользовательских статусов
                     if ($toastComponent != 'WorkerThumbnailExtractor') {
 
                         $userToastStatus->setUserId($userId);
@@ -73,7 +66,6 @@ class ApiStatusController extends AbstractController
                         $entityManager->persist($userToastStatus);
                         $entityManager->flush();
 
-                        //и сразу отображаем уведомление
                         $response = [
                             'message' => $result,
                             'messageTitle' => $toastTitle,
@@ -82,12 +74,10 @@ class ApiStatusController extends AbstractController
                         break;
 
 
-                        //Если это скриншотер и кинопоиск ид указан, то...
                     } else {
 
                         $screenStatus = $toastStatusRepository->findBy(['component' => 'WorkerThumbnailExtractor', 'kp_id' => $toastKpId]);
                         $userStatus = $userToastRepository->findOneBy(['toast_id' => $toastId, 'user_id' => $userId]);
-                        dump($toastId);
                         if ($screenStatus != null and $userStatus == null) {
                             foreach ($screenStatus as $screen) {
                                 if ($screen->getBody() == 'Создание скриншота, завершено') {

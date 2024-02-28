@@ -11,7 +11,7 @@ use App\Service\ImageHandler\ImageHandlerService;
 use App\Interface\Service\Api\External\Kinopoisk\ActorHelperInterface;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @api Кинопоиск
 * @method object dataProcessing()
 * @version 1.0.3
@@ -50,9 +50,6 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
     {
         $dataProcessed = $data;
 
-        dump('----------------------------------');
-        dump($data['name']);
-        dump('----------------------------------');
         //Clean string
         $dataProcessed['name'] = $this->stringProcessor->cleanName($data['name']);
         $dataProcessed['description'] = $this->stringProcessor->cleanDescription($data['description']);
@@ -95,7 +92,6 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
 
 
     public function sendDataInSmarty($data, $selectedDisk){
-        // dump($data['actors']);
 
 
        if($data->isIsSeason()){
@@ -131,7 +127,6 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
             'year' => $data->getYear(),
             'countries' => $data->getCountries(),
             'stream_services' => $streamServiceArr[$selectedDisk],
-            // 'actors_set' => 1,
             'kinopoisk_rating' => $data->getKinopoiskRating(),
             'imdb_rating' => $data->getImdbRating(),
             'duration' => $data->getDuration(),
@@ -140,14 +135,7 @@ class KinopoiskProcessorService implements KinopoiskProcessorInterface
         ];
 
 
-        /*
-            костыль
-        */
-        // if($data->getAgeRating() == null){
-        //     $test = '0';
-        // }else{
-        //     $test = (string)$data->getAgeRating();
-        // }
+
 
         
         $result = $this->smartyApi->createVideo($data->getName(), '0', $params);

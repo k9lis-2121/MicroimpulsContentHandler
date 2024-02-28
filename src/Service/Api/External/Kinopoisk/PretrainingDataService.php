@@ -4,7 +4,7 @@ namespace App\Service\Api\External\Kinopoisk;
 
 use App\Interface\Service\Api\External\Kinopoisk\PretrainingDataInterface;
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @api Кинопоиск
 * @method object dataProcessing()
 * @version 1.0.0

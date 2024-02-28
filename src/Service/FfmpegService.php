@@ -8,7 +8,7 @@ use Symfony\Component\Process\Process;
 /**
  * Сервис для работы с ffmpeg
  * 
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method void extractThumbnail()
  * @method int getVideoDuration()
  * @version 1.0.0
@@ -31,15 +31,7 @@ class FfmpegService implements FfmpegInterface
             'ffmpeg',
             '-i',
             $inputFile,
-            '-r',
-            '0.2',
-            '-vframes',
-            '1',
-            '-y',
-            '-f',
-            'image2',
-            '-q:v',
-            '1',
+            //Секретный код
             "$outputDirectory/$outputFile",
         ]);
 
@@ -57,11 +49,8 @@ class FfmpegService implements FfmpegInterface
         $ffprobe = new Process([
             'ffprobe',
             '-v',
-            'error',
-            '-show_entries',
-            'format=duration',
-            '-of',
-            'default=noprint_wrappers=1:nokey=1',
+            
+            //Секретный код
             $path,
         ]);
 
@@ -72,11 +61,8 @@ class FfmpegService implements FfmpegInterface
             $durationInMinutes = (int) floor($duration / 60);
             return $durationInMinutes;
         } catch (ProcessFailedException $exception) {
-            // Обработка ошибки, если произошла
-            // неудачная попытка выполнить команду ffprobe
             return 0;
         } catch (\Throwable $error) {
-            // Обработка других типов ошибок и исключений
             return 0;
         }
     }

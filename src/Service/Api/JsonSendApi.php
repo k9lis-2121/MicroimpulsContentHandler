@@ -24,7 +24,6 @@ class JsonSendApi
                 'verify_host' => false,
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    // Другие заголовки, если они нужны
                 ],
             ]
         );

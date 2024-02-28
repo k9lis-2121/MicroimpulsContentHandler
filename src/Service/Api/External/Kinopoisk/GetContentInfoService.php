@@ -1,13 +1,13 @@
 <?php
 
-// namespace App\Service\Api\External\Kinopoisk;
+
 namespace App\Service\Api\External\Kinopoisk;
 use App\Service\Api\External\Kinopoisk\KinopoiskUrlMakerService;
 use App\Service\Api\BaseApiService;
 use App\Interface\Service\Api\External\Kinopoisk\GetContentInfoInterface;
 
 /**
-* @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+* @author Валерий Ожерельев 
 * @api Кинопоиск
 * @method object sendApiRequest()
 * @version 1.0.0

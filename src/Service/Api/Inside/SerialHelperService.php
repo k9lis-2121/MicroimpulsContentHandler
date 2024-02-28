@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\Process\Process;
 /**
  * Класс управляет созданием сезнов, эпизодов и ассетов в смарти
- * @author Валерий Ожерельев <ozherelev_va@mycentera.ru>
+ * @author Валерий Ожерельев 
  * @method bool makeSeasonAndEpisodeInSmarty()
  * @version 1.0.0
  */
